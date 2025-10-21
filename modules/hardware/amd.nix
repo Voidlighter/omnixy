@@ -1,16 +1,18 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; {
   options.hardware.amd.enable = mkEnableOption "AMD graphics support";
 
   config = mkIf config.hardware.amd.enable {
     # AMD driver configuration
-    services.xserver.videoDrivers = [ "amdgpu" ];
+    services.xserver.videoDrivers = ["amdgpu"];
 
     # Enable AMD GPU support
-    boot.initrd.kernelModules = [ "amdgpu" ];
+    boot.initrd.kernelModules = ["amdgpu"];
 
     # AMD specific packages
     environment.systemPackages = with pkgs; [

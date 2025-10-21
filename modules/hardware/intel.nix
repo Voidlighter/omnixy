@@ -1,19 +1,21 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; {
   options.hardware.intel.enable = mkEnableOption "Intel graphics support";
 
   config = mkIf config.hardware.intel.enable {
     # Intel driver configuration
-    services.xserver.videoDrivers = [ "modesetting" ];
+    services.xserver.videoDrivers = ["modesetting"];
 
     # Enable Intel GPU support
-    boot.initrd.kernelModules = [ "i915" ];
+    boot.initrd.kernelModules = ["i915"];
 
     # Intel GPU early loading
-    boot.kernelParams = [ "i915.enable_guc=2" ];
+    boot.kernelParams = ["i915.enable_guc=2"];
 
     # Intel specific packages
     environment.systemPackages = with pkgs; [

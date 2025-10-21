@@ -1,37 +1,39 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Fastfetch system information display for OmniXY
 # Beautiful system information with OmniXY branding
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix { inherit config pkgs lib; };
-in
-{
+  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+in {
   config = mkIf (cfg.enable or true) {
     # Add fastfetch and convenience scripts to system packages
-    environment.systemPackages = (with pkgs; [
-      fastfetch
-    ]) ++ [
-      # Convenience scripts
-      (omnixy.makeScript "omnixy-info" "Show OmniXY system information" ''
-        fastfetch --config /etc/omnixy/fastfetch/config.jsonc
-      '')
+    environment.systemPackages =
+      (with pkgs; [
+        fastfetch
+      ])
+      ++ [
+        # Convenience scripts
+        (omnixy.makeScript "omnixy-info" "Show OmniXY system information" ''
+          fastfetch --config /etc/omnixy/fastfetch/config.jsonc
+        '')
 
-      (omnixy.makeScript "omnixy-about" "Show OmniXY about screen" ''
-        clear
-        cat /etc/omnixy/branding/about.txt
-        echo
-        echo "Theme: ${cfg.theme}"
-        echo "Preset: ${cfg.preset or "custom"}"
-        echo "User: ${cfg.user}"
-        echo "NixOS Version: $(nixos-version)"
-        echo
-        echo "Visit: https://github.com/TheArctesian/omnixy"
-      '')
-    ];
+        (omnixy.makeScript "omnixy-about" "Show OmniXY about screen" ''
+          clear
+          cat /etc/omnixy/branding/about.txt
+          echo
+          echo "Theme: ${cfg.theme}"
+          echo "Preset: ${cfg.preset or "custom"}"
+          echo "User: ${cfg.user}"
+          echo "NixOS Version: $(nixos-version)"
+          echo
+          echo "Visit: https://github.com/TheArctesian/omnixy"
+        '')
+      ];
 
     # Create OmniXY branding directory
     environment.etc."omnixy/branding/logo.txt".text = ''

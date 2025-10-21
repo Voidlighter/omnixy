@@ -1,5 +1,8 @@
-{ pkgs, lib, ... }:
-
+{
+  pkgs,
+  lib,
+  ...
+}:
 # OmniXY utility scripts as a Nix package
 pkgs.stdenv.mkDerivation rec {
   pname = "omnixy-scripts";
@@ -60,9 +63,9 @@ pkgs.stdenv.mkDerivation rec {
 
     # Rebuild system
     if [[ "''${OMNIXY_QUIET:-}" == "1" ]]; then
-      sudo nixos-rebuild switch --flake /etc/nixos#laserbeak >/dev/null 2>&1
+      sudo nixos-rebuild switch --flake /etc/nixos#veridia >/dev/null 2>&1
     else
-      sudo nixos-rebuild switch --flake /etc/nixos#laserbeak
+      sudo nixos-rebuild switch --flake /etc/nixos#veridia
       echo "Theme switched to $THEME successfully!"
     fi
     EOF
@@ -154,9 +157,9 @@ pkgs.stdenv.mkDerivation rec {
       echo "🏗️  Rebuilding system..."
     fi
     if [[ "''${OMNIXY_QUIET:-}" == "1" ]]; then
-      sudo nixos-rebuild switch --flake .#laserbeak >/dev/null 2>&1
+      sudo nixos-rebuild switch --flake .#veridia >/dev/null 2>&1
     else
-      sudo nixos-rebuild switch --flake .#laserbeak
+      sudo nixos-rebuild switch --flake .#veridia
       echo ""
       echo "✅ System updated successfully!"
     fi
@@ -532,7 +535,7 @@ pkgs.stdenv.mkDerivation rec {
     # Create rebuild alias
     cat > $out/bin/omnixy-rebuild << 'EOF'
     #!/usr/bin/env bash
-    sudo nixos-rebuild switch --flake /etc/nixos#laserbeak "$@"
+    sudo nixos-rebuild switch --flake /etc/nixos#veridia "$@"
     EOF
     chmod +x $out/bin/omnixy-rebuild
   '';

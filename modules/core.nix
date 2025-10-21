@@ -1,11 +1,12 @@
-{ config, pkgs, lib, ... }:
-
-with lib;
-
-let
-  cfg = config.omnixy;
-in
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.omnixy;
+in {
   options.omnixy = {
     enable = mkEnableOption "OmniXY system configuration";
 
@@ -19,7 +20,7 @@ in
 
     # Theme Configuration
     theme = mkOption {
-      type = types.enum [ "tokyo-night" "catppuccin" "gruvbox" "nord" "everforest" "rose-pine" "kanagawa" ];
+      type = types.enum ["tokyo-night" "catppuccin" "gruvbox" "nord" "everforest" "rose-pine" "kanagawa"];
       default = "tokyo-night";
       description = "System theme - changes colors, wallpaper, and overall look";
       example = "catppuccin";
@@ -33,7 +34,7 @@ in
     };
 
     displayManager = mkOption {
-      type = types.enum [ "gdm" "tuigreet" ];
+      type = types.enum ["gdm" "tuigreet"];
       default = "tuigreet";
       description = "Display manager to use for login";
     };
@@ -76,7 +77,7 @@ in
 
     # Simple Presets - Predefined feature combinations
     preset = mkOption {
-      type = types.nullOr (types.enum [ "minimal" "developer" "creator" "gamer" "office" "everything" ]);
+      type = types.nullOr (types.enum ["minimal" "developer" "creator" "gamer" "office" "everything"]);
       default = null;
       description = ''
         Quick setup preset that automatically enables related features:
@@ -136,8 +137,8 @@ in
     # Basic system configuration
     system.autoUpgrade = {
       enable = true;
-      flake = "/etc/nixos#laserbeak";
-      flags = [ "--update-input" "nixpkgs" "--commit-lock-file" ];
+      flake = "/etc/nixos#veridia";
+      flags = ["--update-input" "nixpkgs" "--commit-lock-file"];
       dates = "weekly";
     };
 
@@ -155,11 +156,11 @@ in
         wheelNeedsPassword = true;
         extraRules = [
           {
-            groups = [ "wheel" ];
+            groups = ["wheel"];
             commands = [
               {
                 command = "/run/current-system/sw/bin/nixos-rebuild";
-                options = [ "NOPASSWD" ];
+                options = ["NOPASSWD"];
               }
             ];
           }
@@ -208,7 +209,6 @@ in
           userServices = true;
         };
       };
-
 
       # System monitoring
       smartd = {
@@ -301,7 +301,7 @@ in
         alias vi='nvim'
 
         # OmniXY specific aliases
-        alias omnixy-rebuild='sudo nixos-rebuild switch --flake /etc/nixos#laserbeak'
+        alias omnixy-rebuild='sudo nixos-rebuild switch --flake /etc/nixos#veridia'
         alias omnixy-update='nix flake update --flake /etc/nixos'
         alias omnixy-clean='sudo nix-collect-garbage -d'
         alias omnixy-search='nix search nixpkgs'
@@ -398,24 +398,76 @@ in
         echo "📋 Basic Settings:"
         echo "   User: ${cfg.user}"
         echo "   Theme: ${cfg.theme}"
-        echo "   Preset: ${if cfg.preset != null then cfg.preset else "custom"}"
+        echo "   Preset: ${
+          if cfg.preset != null
+          then cfg.preset
+          else "custom"
+        }"
         echo "   Display Manager: ${cfg.displayManager}"
         echo ""
         echo "🎯 Active Features:"
-        echo "   Development: ${if cfg.features.coding or false then "✅" else "❌"}"
-        echo "   Containers: ${if cfg.features.containers or false then "✅" else "❌"}"
-        echo "   Gaming: ${if cfg.features.gaming or false then "✅" else "❌"}"
-        echo "   Media: ${if cfg.features.media or false then "✅" else "❌"}"
-        echo "   Office: ${if cfg.features.office or false then "✅" else "❌"}"
-        echo "   Communication: ${if cfg.features.communication or false then "✅" else "❌"}"
-        echo "   Virtualization: ${if cfg.features.virtualization or false then "✅" else "❌"}"
-        echo "   Backup: ${if cfg.features.backup or false then "✅" else "❌"}"
+        echo "   Development: ${
+          if cfg.features.coding or false
+          then "✅"
+          else "❌"
+        }"
+        echo "   Containers: ${
+          if cfg.features.containers or false
+          then "✅"
+          else "❌"
+        }"
+        echo "   Gaming: ${
+          if cfg.features.gaming or false
+          then "✅"
+          else "❌"
+        }"
+        echo "   Media: ${
+          if cfg.features.media or false
+          then "✅"
+          else "❌"
+        }"
+        echo "   Office: ${
+          if cfg.features.office or false
+          then "✅"
+          else "❌"
+        }"
+        echo "   Communication: ${
+          if cfg.features.communication or false
+          then "✅"
+          else "❌"
+        }"
+        echo "   Virtualization: ${
+          if cfg.features.virtualization or false
+          then "✅"
+          else "❌"
+        }"
+        echo "   Backup: ${
+          if cfg.features.backup or false
+          then "✅"
+          else "❌"
+        }"
         echo ""
         echo "🎨 Theming:"
-        echo "   Custom Themes: ${if cfg.features.customThemes or false then "✅" else "❌"}"
-        echo "   Wallpaper Effects: ${if cfg.features.wallpaperEffects or false then "✅" else "❌"}"
-        echo "   Color Scheme: ${if cfg.colorScheme != null then "Custom" else "Theme-based"}"
-        echo "   Wallpaper: ${if cfg.wallpaper != null then toString cfg.wallpaper else "Not set"}"
+        echo "   Custom Themes: ${
+          if cfg.features.customThemes or false
+          then "✅"
+          else "❌"
+        }"
+        echo "   Wallpaper Effects: ${
+          if cfg.features.wallpaperEffects or false
+          then "✅"
+          else "❌"
+        }"
+        echo "   Color Scheme: ${
+          if cfg.colorScheme != null
+          then "Custom"
+          else "Theme-based"
+        }"
+        echo "   Wallpaper: ${
+          if cfg.wallpaper != null
+          then toString cfg.wallpaper
+          else "Not set"
+        }"
         echo ""
         echo "💡 Quick Commands:"
         echo "   omnixy-setup-colors  - Configure colors and themes"

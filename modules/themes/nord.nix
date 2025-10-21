@@ -1,49 +1,48 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Nord theme for OmniXY
 # An arctic, north-bluish color palette
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix { inherit config pkgs lib; };
+  omnixy = import ../helpers.nix {inherit config pkgs lib;};
 
   # Nord color palette
   colors = {
     # Polar Night
-    bg = "#2e3440";        # Dark background
-    bg_dark = "#242933";   # Darker background
-    bg_light = "#3b4252";  # Light background
+    bg = "#2e3440"; # Dark background
+    bg_dark = "#242933"; # Darker background
+    bg_light = "#3b4252"; # Light background
     bg_lighter = "#434c5e"; # Lighter background
 
     # Snow Storm
-    fg = "#eceff4";        # Light foreground
-    fg_dim = "#d8dee9";    # Dimmed foreground
-    fg_dark = "#e5e9f0";   # Dark foreground
+    fg = "#eceff4"; # Light foreground
+    fg_dim = "#d8dee9"; # Dimmed foreground
+    fg_dark = "#e5e9f0"; # Dark foreground
 
     # Frost
-    blue = "#5e81ac";      # Primary blue
+    blue = "#5e81ac"; # Primary blue
     blue_light = "#88c0d0"; # Light blue
     blue_bright = "#81a1c1"; # Bright blue
-    teal = "#8fbcbb";      # Teal
+    teal = "#8fbcbb"; # Teal
 
     # Aurora
-    red = "#bf616a";       # Red
-    orange = "#d08770";    # Orange
-    yellow = "#ebcb8b";    # Yellow
-    green = "#a3be8c";     # Green
-    purple = "#b48ead";    # Purple
+    red = "#bf616a"; # Red
+    orange = "#d08770"; # Orange
+    yellow = "#ebcb8b"; # Yellow
+    green = "#a3be8c"; # Green
+    purple = "#b48ead"; # Purple
 
     # UI colors
-    accent = "#88c0d0";    # Primary accent (light blue)
-    warning = "#ebcb8b";   # Warning (yellow)
-    error = "#bf616a";     # Error (red)
-    success = "#a3be8c";   # Success (green)
+    accent = "#88c0d0"; # Primary accent (light blue)
+    warning = "#ebcb8b"; # Warning (yellow)
+    error = "#bf616a"; # Error (red)
+    success = "#a3be8c"; # Success (green)
   };
-
-in
-{
+in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # System-level theme configuration
     {
@@ -76,22 +75,22 @@ in
       # Console colors
       console = {
         colors = [
-          colors.bg_dark    # black
-          colors.red        # red
-          colors.green      # green
-          colors.yellow     # yellow
-          colors.blue       # blue
-          colors.purple     # magenta
-          colors.teal       # cyan
-          colors.fg_dim     # white
+          colors.bg_dark # black
+          colors.red # red
+          colors.green # green
+          colors.yellow # yellow
+          colors.blue # blue
+          colors.purple # magenta
+          colors.teal # cyan
+          colors.fg_dim # white
           colors.bg_lighter # bright black
-          colors.red        # bright red
-          colors.green      # bright green
-          colors.yellow     # bright yellow
+          colors.red # bright red
+          colors.green # bright green
+          colors.yellow # bright yellow
           colors.blue_light # bright blue
-          colors.purple     # bright magenta
+          colors.purple # bright magenta
           colors.blue_bright # bright cyan
-          colors.fg         # bright white
+          colors.fg # bright white
         ];
       };
     }
@@ -322,8 +321,8 @@ in
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = false;
-          selectedLineBgColor = [ colors.bg_light ];
-          selectedRangeBgColor = [ colors.bg_light ];
+          selectedLineBgColor = [colors.bg_light];
+          selectedRangeBgColor = [colors.bg_light];
         };
       };
 

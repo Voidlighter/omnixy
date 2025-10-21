@@ -1,8 +1,10 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; {
   imports = [
     ./nvidia.nix
     ./amd.nix
@@ -86,7 +88,6 @@ with lib;
     # Power profiles daemon (modern power management)
     power-profiles-daemon.enable = true;
 
-
     # Hardware monitoring
     smartd = {
       enable = true;
@@ -167,6 +168,6 @@ with lib;
   console = {
     earlySetup = true;
     font = lib.mkDefault "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz";
-    packages = [ pkgs.terminus_font ];
+    packages = [pkgs.terminus_font];
   };
 }

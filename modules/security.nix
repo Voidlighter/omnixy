@@ -1,13 +1,14 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # OmniXY Security Configuration
 # Fingerprint, FIDO2, and system hardening features
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy.security;
-  omnixy = import ./helpers.nix { inherit config pkgs lib; };
+  omnixy = import ./helpers.nix {inherit config pkgs lib;};
 
   # Hardware detection helpers
   hasFingerprintReader = ''
@@ -306,8 +307,7 @@ let
       esac
     '')
   ];
-in
-{
+in {
   options.omnixy.security = {
     enable = mkEnableOption "OmniXY security features";
 
@@ -358,20 +358,23 @@ in
 
   config = mkIf (cfg.enable or true) {
     # Security packages and management scripts (consolidated)
-    environment.systemPackages = (with pkgs; [
-      # Fingerprint authentication
-      fprintd
+    environment.systemPackages =
+      (with pkgs; [
+        # Fingerprint authentication
+        fprintd
 
-      # FIDO2/WebAuthn
-      libfido2
-      pam_u2f
+        # FIDO2/WebAuthn
+        libfido2
+        pam_u2f
 
-      # Security utilities
-      usbutils
-      pciutils
-    ]) ++ [
-      # Security management scripts defined below
-    ] ++ securityScripts;
+        # Security utilities
+        usbutils
+        pciutils
+      ])
+      ++ [
+        # Security management scripts defined below
+      ]
+      ++ securityScripts;
 
     # Fingerprint authentication configuration
     services.fprintd = mkIf (cfg.fingerprint.enable or cfg.fingerprint.autoDetect) {
@@ -488,10 +491,13 @@ in
       enable = true;
 
       # Essential services (NixOS firewall denies by default)
-      allowedTCPPorts = [ 22 ];  # SSH
-      allowedUDPPorts = [ 53317 ];  # LocalSend
+      allowedTCPPorts = [22]; # SSH
+      allowedUDPPorts = [53317]; # LocalSend
       allowedTCPPortRanges = [
-        { from = 53317; to = 53317; }  # LocalSend TCP
+        {
+          from = 53317;
+          to = 53317;
+        } # LocalSend TCP
       ];
     };
 

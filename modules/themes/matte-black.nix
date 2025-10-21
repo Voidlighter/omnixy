@@ -1,49 +1,48 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Matte Black theme for OmniXY
 # A sleek, professional dark theme with matte black aesthetics
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix { inherit config pkgs lib; };
+  omnixy = import ../helpers.nix {inherit config pkgs lib;};
 
   # Matte Black color palette
   colors = {
     # Base colors - various shades of black and gray
-    bg = "#0d1117";          # Very dark background
-    bg_light = "#161b22";    # Slightly lighter background
-    bg_lighter = "#21262d";  # Even lighter background
-    bg_accent = "#30363d";   # Accent background
+    bg = "#0d1117"; # Very dark background
+    bg_light = "#161b22"; # Slightly lighter background
+    bg_lighter = "#21262d"; # Even lighter background
+    bg_accent = "#30363d"; # Accent background
 
     # Foreground colors
-    fg = "#f0f6fc";          # Light foreground
-    fg_dim = "#8b949e";      # Dimmed foreground
-    fg_muted = "#6e7681";    # Muted foreground
+    fg = "#f0f6fc"; # Light foreground
+    fg_dim = "#8b949e"; # Dimmed foreground
+    fg_muted = "#6e7681"; # Muted foreground
 
     # Accent colors - muted and professional
-    white = "#ffffff";       # Pure white
-    gray = "#8A8A8D";        # Main accent gray (from omarchy)
-    gray_light = "#aeb7c2";  # Light gray
-    gray_dark = "#484f58";   # Dark gray
+    white = "#ffffff"; # Pure white
+    gray = "#8A8A8D"; # Main accent gray (from omarchy)
+    gray_light = "#aeb7c2"; # Light gray
+    gray_dark = "#484f58"; # Dark gray
 
     # Status colors - muted tones
-    red = "#f85149";         # Error red
-    orange = "#fd7e14";      # Warning orange
-    yellow = "#d29922";      # Attention yellow
-    green = "#238636";       # Success green
-    blue = "#58a6ff";        # Info blue
-    purple = "#a5a2ff";      # Purple accent
-    cyan = "#76e3ea";        # Cyan accent
+    red = "#f85149"; # Error red
+    orange = "#fd7e14"; # Warning orange
+    yellow = "#d29922"; # Attention yellow
+    green = "#238636"; # Success green
+    blue = "#58a6ff"; # Info blue
+    purple = "#a5a2ff"; # Purple accent
+    cyan = "#76e3ea"; # Cyan accent
 
     # Special UI colors
-    border = "#30363d";      # Border color
-    shadow = "#010409";      # Shadow color
+    border = "#30363d"; # Border color
+    shadow = "#010409"; # Shadow color
   };
-
-in
-{
+in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # System-level theme configuration
     {
@@ -76,22 +75,22 @@ in
       # Console colors
       console = {
         colors = [
-          colors.bg          # black
-          colors.red         # red
-          colors.green       # green
-          colors.yellow      # yellow
-          colors.blue        # blue
-          colors.purple      # magenta
-          colors.cyan        # cyan
-          colors.fg_dim      # white
-          colors.gray_dark   # bright black
-          colors.red         # bright red
-          colors.green       # bright green
-          colors.yellow      # bright yellow
-          colors.blue        # bright blue
-          colors.purple      # bright magenta
-          colors.cyan        # bright cyan
-          colors.fg          # bright white
+          colors.bg # black
+          colors.red # red
+          colors.green # green
+          colors.yellow # yellow
+          colors.blue # blue
+          colors.purple # magenta
+          colors.cyan # cyan
+          colors.fg_dim # white
+          colors.gray_dark # bright black
+          colors.red # bright red
+          colors.green # bright green
+          colors.yellow # bright yellow
+          colors.blue # bright blue
+          colors.purple # bright magenta
+          colors.cyan # bright cyan
+          colors.fg # bright white
         ];
       };
     }
@@ -315,8 +314,8 @@ in
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = false;
-          selectedLineBgColor = [ colors.bg_lighter ];
-          selectedRangeBgColor = [ colors.bg_lighter ];
+          selectedLineBgColor = [colors.bg_lighter];
+          selectedRangeBgColor = [colors.bg_lighter];
         };
       };
 

@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   # Catppuccin Mocha theme configuration
   config = {
     # Set theme wallpaper
@@ -187,16 +190,16 @@
       services.mako = {
         settings = {
           background-color = "#1e1e2e";
-                  text-color = "#cdd6f4";
-                  border-color = "#cba6f7";
-                  progress-color = "#cba6f7";
-                  default-timeout = 5000;
-                  border-radius = 10;
-                  border-size = 2;
-                  font = "JetBrainsMono Nerd Font 10";
+          text-color = "#cdd6f4";
+          border-color = "#cba6f7";
+          progress-color = "#cba6f7";
+          default-timeout = 5000;
+          border-radius = 10;
+          border-size = 2;
+          font = "JetBrainsMono Nerd Font 10";
         };
-                  padding = "10";
-                  margin = "20";
+        padding = "10";
+        margin = "20";
       };
     };
 

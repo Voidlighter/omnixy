@@ -1,38 +1,37 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Rose Pine theme for OmniXY
 # All natural pine, faux fur and a bit of soho vibes for the classy minimalist
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix { inherit config pkgs lib; };
+  omnixy = import ../helpers.nix {inherit config pkgs lib;};
 
   # Rose Pine color palette
   colors = {
     # Base colors
-    base = "#191724";      # Dark background
-    surface = "#1f1d2e";   # Surface background
-    overlay = "#26233a";   # Overlay background
-    muted = "#6e6a86";     # Muted foreground
-    subtle = "#908caa";    # Subtle foreground
-    text = "#e0def4";      # Main foreground
-    love = "#eb6f92";      # Love (pink/red)
-    gold = "#f6c177";      # Gold (yellow)
-    rose = "#ebbcba";      # Rose (peach)
-    pine = "#31748f";      # Pine (blue)
-    foam = "#9ccfd8";      # Foam (cyan)
-    iris = "#c4a7e7";      # Iris (purple)
+    base = "#191724"; # Dark background
+    surface = "#1f1d2e"; # Surface background
+    overlay = "#26233a"; # Overlay background
+    muted = "#6e6a86"; # Muted foreground
+    subtle = "#908caa"; # Subtle foreground
+    text = "#e0def4"; # Main foreground
+    love = "#eb6f92"; # Love (pink/red)
+    gold = "#f6c177"; # Gold (yellow)
+    rose = "#ebbcba"; # Rose (peach)
+    pine = "#31748f"; # Pine (blue)
+    foam = "#9ccfd8"; # Foam (cyan)
+    iris = "#c4a7e7"; # Iris (purple)
 
     # Highlight colors
     highlight_low = "#21202e";
     highlight_med = "#403d52";
     highlight_high = "#524f67";
   };
-
-in
-{
+in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # System-level theme configuration
     {
@@ -65,22 +64,22 @@ in
       # Console colors
       console = {
         colors = [
-          colors.overlay     # black
-          colors.love        # red
-          colors.pine        # green (using pine as green alternative)
-          colors.gold        # yellow
-          colors.foam        # blue (using foam as blue)
-          colors.iris        # magenta
-          colors.rose        # cyan (using rose as cyan)
-          colors.text        # white
-          colors.muted       # bright black
-          colors.love        # bright red
-          colors.pine        # bright green
-          colors.gold        # bright yellow
-          colors.foam        # bright blue
-          colors.iris        # bright magenta
-          colors.rose        # bright cyan
-          colors.text        # bright white
+          colors.overlay # black
+          colors.love # red
+          colors.pine # green (using pine as green alternative)
+          colors.gold # yellow
+          colors.foam # blue (using foam as blue)
+          colors.iris # magenta
+          colors.rose # cyan (using rose as cyan)
+          colors.text # white
+          colors.muted # bright black
+          colors.love # bright red
+          colors.pine # bright green
+          colors.gold # bright yellow
+          colors.foam # bright blue
+          colors.iris # bright magenta
+          colors.rose # bright cyan
+          colors.text # bright white
         ];
       };
     }
@@ -308,8 +307,8 @@ in
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = false;
-          selectedLineBgColor = [ colors.surface ];
-          selectedRangeBgColor = [ colors.surface ];
+          selectedLineBgColor = [colors.surface];
+          selectedRangeBgColor = [colors.surface];
         };
       };
 

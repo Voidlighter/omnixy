@@ -1,6 +1,10 @@
-{ config, pkgs, lib, inputs, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: let
   cfg = config.omnixy;
 
   # Use nix-colors if available and configured, otherwise fallback to manual colors
@@ -27,9 +31,7 @@ let
     if useNixColors && colorScheme ? colors && colorScheme.colors ? ${name}
     then "#${colorScheme.colors.${name}}"
     else fallback;
-
-in
-{
+in {
   # Tokyo Night theme configuration
   config = {
     # Set theme wallpaper
@@ -86,8 +88,14 @@ in
         };
 
         indexed_colors = [
-          { index = 16; color = getColor "base09" "#ff9e64"; }
-          { index = 17; color = getColor "base0F" "#db4b4b"; }
+          {
+            index = 16;
+            color = getColor "base09" "#ff9e64";
+          }
+          {
+            index = 17;
+            color = getColor "base0F" "#db4b4b";
+          }
         ];
       };
 
@@ -162,14 +170,17 @@ in
       gtk = {
         theme = {
           name = "Tokyo-Night";
-          package = pkgs.tokyo-night-gtk or (pkgs.adw-gtk3.overrideAttrs (oldAttrs: {
-            pname = "tokyo-night-gtk";
-            postInstall = (oldAttrs.postInstall or "") + ''
-              # Customize colors for Tokyo Night
-              sed -i 's/#1e1e2e/#1a1b26/g' $out/share/themes/*/gtk-3.0/gtk.css
-              sed -i 's/#cdd6f4/#c0caf5/g' $out/share/themes/*/gtk-3.0/gtk.css
-            '';
-          }));
+          package =
+            pkgs.tokyo-night-gtk or (pkgs.adw-gtk3.overrideAttrs (oldAttrs: {
+              pname = "tokyo-night-gtk";
+              postInstall =
+                (oldAttrs.postInstall or "")
+                + ''
+                  # Customize colors for Tokyo Night
+                  sed -i 's/#1e1e2e/#1a1b26/g' $out/share/themes/*/gtk-3.0/gtk.css
+                  sed -i 's/#cdd6f4/#c0caf5/g' $out/share/themes/*/gtk-3.0/gtk.css
+                '';
+            }));
         };
       };
 
@@ -245,14 +256,14 @@ in
       # Lazygit theme
       programs.lazygit.settings = {
         gui.theme = {
-          activeBorderColor = [ "#7aa2f7" "bold" ];
-          inactiveBorderColor = [ "#414868" ];
-          selectedLineBgColor = [ "#33467c" ];
-          selectedRangeBgColor = [ "#33467c" ];
-          cherryPickedCommitBgColor = [ "#33467c" ];
-          cherryPickedCommitFgColor = [ "#7aa2f7" ];
-          unstagedChangesColor = [ "#f7768e" ];
-          defaultFgColor = [ "#c0caf5" ];
+          activeBorderColor = ["#7aa2f7" "bold"];
+          inactiveBorderColor = ["#414868"];
+          selectedLineBgColor = ["#33467c"];
+          selectedRangeBgColor = ["#33467c"];
+          cherryPickedCommitBgColor = ["#33467c"];
+          cherryPickedCommitFgColor = ["#7aa2f7"];
+          unstagedChangesColor = ["#f7768e"];
+          defaultFgColor = ["#c0caf5"];
         };
       };
 

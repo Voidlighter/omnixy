@@ -1,13 +1,14 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # OmniXY Boot Configuration
 # Plymouth theming and seamless boot experience
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix { inherit config pkgs lib; };
+  omnixy = import ./helpers.nix {inherit config pkgs lib;};
 
   # Import our custom Plymouth theme package
   # plymouth-themes = (pkgs.callPackage ../packages/plymouth-theme.nix {}) or pkgs.plymouth;
@@ -15,14 +16,13 @@ let
     if builtins.pathExists ../packages/plymouth-theme.nix
     then pkgs.callPackage ../packages/plymouth-theme.nix {}
     else pkgs.plymouth;
-in
-{
+in {
   config = mkIf (cfg.enable or true) {
     # Plymouth boot splash configuration
     boot.plymouth = {
       enable = true;
       theme = "omnixy-${cfg.theme}";
-      themePackages = [ plymouth-themes ];
+      themePackages = [plymouth-themes];
 
       # Logo configuration
       logo = "${plymouth-themes}/share/plymouth/themes/omnixy-${cfg.theme}/logo.png";
@@ -60,7 +60,7 @@ in
 
         # systemd-boot theme integration
         systemd-boot = {
-          editor = false;  # Disable editor for security
+          editor = false; # Disable editor for security
           configurationLimit = 10;
           consoleMode = "auto";
         };
@@ -79,9 +79,9 @@ in
     # Systemd service for seamless login transition
     systemd.services.omnixy-boot-transition = {
       description = "OmniXY Boot Transition Service";
-      after = [ "plymouth-start.service" "display-manager.service" ];
-      before = [ "plymouth-quit.service" ];
-      wantedBy = [ "multi-user.target" ];
+      after = ["plymouth-start.service" "display-manager.service"];
+      before = ["plymouth-quit.service"];
+      wantedBy = ["multi-user.target"];
 
       serviceConfig = {
         Type = "oneshot";
@@ -136,7 +136,7 @@ in
 
         # Regenerate initrd
         echo "🔄 Regenerating initrd..."
-        sudo nixos-rebuild boot --flake /etc/nixos#laserbeak
+        sudo nixos-rebuild boot --flake /etc/nixos#veridia
 
         echo "✅ Plymouth theme updated!"
         echo "⚠️  Reboot to see the new boot theme"
@@ -247,22 +247,52 @@ in
     # Console and TTY configuration
     console = {
       earlySetup = true;
-      colors = [
-        # Custom console color palette matching current theme
-        # This will be used before Plymouth starts
-      ] ++ (
-        if cfg.theme == "tokyo-night" then [
-          "1a1b26" "f7768e" "9ece6a" "e0af68"
-          "7aa2f7" "bb9af7" "7dcfff" "c0caf5"
-          "414868" "f7768e" "9ece6a" "e0af68"
-          "7aa2f7" "bb9af7" "7dcfff" "a9b1d6"
-        ] else if cfg.theme == "gruvbox" then [
-          "282828" "cc241d" "98971a" "d79921"
-          "458588" "b16286" "689d6a" "a89984"
-          "928374" "fb4934" "b8bb26" "fabd2f"
-          "83a598" "d3869b" "8ec07c" "ebdbb2"
-        ] else []
-      );
+      colors =
+        [
+          # Custom console color palette matching current theme
+          # This will be used before Plymouth starts
+        ]
+        ++ (
+          if cfg.theme == "tokyo-night"
+          then [
+            "1a1b26"
+            "f7768e"
+            "9ece6a"
+            "e0af68"
+            "7aa2f7"
+            "bb9af7"
+            "7dcfff"
+            "c0caf5"
+            "414868"
+            "f7768e"
+            "9ece6a"
+            "e0af68"
+            "7aa2f7"
+            "bb9af7"
+            "7dcfff"
+            "a9b1d6"
+          ]
+          else if cfg.theme == "gruvbox"
+          then [
+            "282828"
+            "cc241d"
+            "98971a"
+            "d79921"
+            "458588"
+            "b16286"
+            "689d6a"
+            "a89984"
+            "928374"
+            "fb4934"
+            "b8bb26"
+            "fabd2f"
+            "83a598"
+            "d3869b"
+            "8ec07c"
+            "ebdbb2"
+          ]
+          else []
+        );
     };
   };
 }

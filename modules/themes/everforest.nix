@@ -1,46 +1,45 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Everforest theme for OmniXY
 # A green based color scheme with warm, comfortable tones
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix { inherit config pkgs lib; };
+  omnixy = import ../helpers.nix {inherit config pkgs lib;};
 
   # Everforest Dark color palette
   colors = {
     # Background colors
-    bg = "#2d353b";        # Dark background
-    bg_dim = "#232a2e";    # Dimmer background
-    bg_red = "#3c302a";    # Red background
+    bg = "#2d353b"; # Dark background
+    bg_dim = "#232a2e"; # Dimmer background
+    bg_red = "#3c302a"; # Red background
     bg_visual = "#543a48"; # Visual selection background
     bg_yellow = "#45443c"; # Yellow background
-    bg_green = "#3d4313";  # Green background
-    bg_blue = "#384b55";   # Blue background
+    bg_green = "#3d4313"; # Green background
+    bg_blue = "#384b55"; # Blue background
 
     # Foreground colors
-    fg = "#d3c6aa";        # Light foreground
-    red = "#e67e80";       # Red
-    orange = "#e69875";    # Orange
-    yellow = "#dbbc7f";    # Yellow
-    green = "#a7c080";     # Green
-    aqua = "#83c092";      # Aqua
-    blue = "#7fbbb3";      # Blue
-    purple = "#d699b6";    # Purple
-    grey0 = "#7a8478";     # Grey 0
-    grey1 = "#859289";     # Grey 1
-    grey2 = "#9da9a0";     # Grey 2
+    fg = "#d3c6aa"; # Light foreground
+    red = "#e67e80"; # Red
+    orange = "#e69875"; # Orange
+    yellow = "#dbbc7f"; # Yellow
+    green = "#a7c080"; # Green
+    aqua = "#83c092"; # Aqua
+    blue = "#7fbbb3"; # Blue
+    purple = "#d699b6"; # Purple
+    grey0 = "#7a8478"; # Grey 0
+    grey1 = "#859289"; # Grey 1
+    grey2 = "#9da9a0"; # Grey 2
 
     # Status line colors
     statusline1 = "#a7c080"; # Green for active
     statusline2 = "#d3c6aa"; # Foreground for inactive
     statusline3 = "#e67e80"; # Red for errors
   };
-
-in
-{
+in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # System-level theme configuration
     {
@@ -73,22 +72,22 @@ in
       # Console colors
       console = {
         colors = [
-          colors.bg_dim     # black
-          colors.red        # red
-          colors.green      # green
-          colors.yellow     # yellow
-          colors.blue       # blue
-          colors.purple     # magenta
-          colors.aqua       # cyan
-          colors.grey1      # white
-          colors.grey0      # bright black
-          colors.red        # bright red
-          colors.green      # bright green
-          colors.yellow     # bright yellow
-          colors.blue       # bright blue
-          colors.purple     # bright magenta
-          colors.aqua       # bright cyan
-          colors.fg         # bright white
+          colors.bg_dim # black
+          colors.red # red
+          colors.green # green
+          colors.yellow # yellow
+          colors.blue # blue
+          colors.purple # magenta
+          colors.aqua # cyan
+          colors.grey1 # white
+          colors.grey0 # bright black
+          colors.red # bright red
+          colors.green # bright green
+          colors.yellow # bright yellow
+          colors.blue # bright blue
+          colors.purple # bright magenta
+          colors.aqua # bright cyan
+          colors.fg # bright white
         ];
       };
     }
@@ -318,8 +317,8 @@ in
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = false;
-          selectedLineBgColor = [ colors.bg_visual ];
-          selectedRangeBgColor = [ colors.bg_visual ];
+          selectedLineBgColor = [colors.bg_visual];
+          selectedRangeBgColor = [colors.bg_visual];
         };
       };
 

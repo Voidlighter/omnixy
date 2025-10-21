@@ -1,42 +1,41 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Gruvbox theme for OmniXY
 # A retro groove color scheme with warm, earthy tones
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix { inherit config pkgs lib; };
+  omnixy = import ../helpers.nix {inherit config pkgs lib;};
 
   # Gruvbox color palette
   colors = {
-    bg = "#282828";        # Dark background
-    bg_hard = "#1d2021";   # Harder background
-    bg_soft = "#32302f";   # Soft background
-    fg = "#ebdbb2";        # Light foreground
-    fg_dim = "#a89984";    # Dimmed foreground
+    bg = "#282828"; # Dark background
+    bg_hard = "#1d2021"; # Harder background
+    bg_soft = "#32302f"; # Soft background
+    fg = "#ebdbb2"; # Light foreground
+    fg_dim = "#a89984"; # Dimmed foreground
 
-    red = "#cc241d";       # Dark red
-    green = "#98971a";     # Dark green
-    yellow = "#d79921";    # Dark yellow
-    blue = "#458588";      # Dark blue
-    purple = "#b16286";    # Dark purple
-    aqua = "#689d6a";      # Dark aqua
-    orange = "#d65d0e";    # Dark orange
-    gray = "#928374";      # Gray
+    red = "#cc241d"; # Dark red
+    green = "#98971a"; # Dark green
+    yellow = "#d79921"; # Dark yellow
+    blue = "#458588"; # Dark blue
+    purple = "#b16286"; # Dark purple
+    aqua = "#689d6a"; # Dark aqua
+    orange = "#d65d0e"; # Dark orange
+    gray = "#928374"; # Gray
 
-    red_light = "#fb4934";    # Light red
-    green_light = "#b8bb26";  # Light green
+    red_light = "#fb4934"; # Light red
+    green_light = "#b8bb26"; # Light green
     yellow_light = "#fabd2f"; # Light yellow
-    blue_light = "#83a598";   # Light blue
+    blue_light = "#83a598"; # Light blue
     purple_light = "#d3869b"; # Light purple
-    aqua_light = "#8ec07c";   # Light aqua
+    aqua_light = "#8ec07c"; # Light aqua
     orange_light = "#fe8019"; # Light orange
   };
-
-in
-{
+in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # System-level theme configuration
     {
@@ -69,22 +68,22 @@ in
       # Console colors
       console = {
         colors = [
-          colors.bg       # black
-          colors.red      # red
-          colors.green    # green
-          colors.yellow   # yellow
-          colors.blue     # blue
-          colors.purple   # magenta
-          colors.aqua     # cyan
-          colors.fg       # white
-          colors.gray     # bright black
-          colors.red_light    # bright red
-          colors.green_light  # bright green
+          colors.bg # black
+          colors.red # red
+          colors.green # green
+          colors.yellow # yellow
+          colors.blue # blue
+          colors.purple # magenta
+          colors.aqua # cyan
+          colors.fg # white
+          colors.gray # bright black
+          colors.red_light # bright red
+          colors.green_light # bright green
           colors.yellow_light # bright yellow
-          colors.blue_light   # bright blue
+          colors.blue_light # bright blue
           colors.purple_light # bright magenta
-          colors.aqua_light   # bright cyan
-          colors.fg       # bright white
+          colors.aqua_light # bright cyan
+          colors.fg # bright white
         ];
       };
     }
@@ -315,8 +314,8 @@ in
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = false;
-          selectedLineBgColor = [ colors.bg_soft ];
-          selectedRangeBgColor = [ colors.bg_soft ];
+          selectedLineBgColor = [colors.bg_soft];
+          selectedRangeBgColor = [colors.bg_soft];
         };
       };
 

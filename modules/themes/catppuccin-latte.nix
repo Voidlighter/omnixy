@@ -1,55 +1,54 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Catppuccin Latte theme for OmniXY
 # A soothing light theme with excellent contrast
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix { inherit config pkgs lib; };
+  omnixy = import ../helpers.nix {inherit config pkgs lib;};
 
   # Catppuccin Latte color palette
   colors = {
     # Base colors (light theme)
-    base = "#eff1f5";        # Light background
-    mantle = "#e6e9ef";      # Slightly darker background
-    crust = "#dce0e8";       # Crust background
+    base = "#eff1f5"; # Light background
+    mantle = "#e6e9ef"; # Slightly darker background
+    crust = "#dce0e8"; # Crust background
 
     # Text colors
-    text = "#4c4f69";        # Main text
-    subtext1 = "#5c5f77";    # Subtext 1
-    subtext0 = "#6c6f85";    # Subtext 0
+    text = "#4c4f69"; # Main text
+    subtext1 = "#5c5f77"; # Subtext 1
+    subtext0 = "#6c6f85"; # Subtext 0
 
     # Surface colors
-    surface0 = "#ccd0da";    # Surface 0
-    surface1 = "#bcc0cc";    # Surface 1
-    surface2 = "#acb0be";    # Surface 2
+    surface0 = "#ccd0da"; # Surface 0
+    surface1 = "#bcc0cc"; # Surface 1
+    surface2 = "#acb0be"; # Surface 2
 
     # Overlay colors
-    overlay0 = "#9ca0b0";    # Overlay 0
-    overlay1 = "#8c8fa1";    # Overlay 1
-    overlay2 = "#7c7f93";    # Overlay 2
+    overlay0 = "#9ca0b0"; # Overlay 0
+    overlay1 = "#8c8fa1"; # Overlay 1
+    overlay2 = "#7c7f93"; # Overlay 2
 
     # Accent colors
-    rosewater = "#dc8a78";   # Rosewater
-    flamingo = "#dd7878";    # Flamingo
-    pink = "#ea76cb";        # Pink
-    mauve = "#8839ef";       # Mauve
-    red = "#d20f39";         # Red
-    maroon = "#e64553";      # Maroon
-    peach = "#fe640b";       # Peach
-    yellow = "#df8e1d";      # Yellow
-    green = "#40a02b";       # Green
-    teal = "#179299";        # Teal
-    sky = "#04a5e5";         # Sky
-    sapphire = "#209fb5";    # Sapphire
-    blue = "#1e66f5";        # Blue
-    lavender = "#7287fd";    # Lavender
+    rosewater = "#dc8a78"; # Rosewater
+    flamingo = "#dd7878"; # Flamingo
+    pink = "#ea76cb"; # Pink
+    mauve = "#8839ef"; # Mauve
+    red = "#d20f39"; # Red
+    maroon = "#e64553"; # Maroon
+    peach = "#fe640b"; # Peach
+    yellow = "#df8e1d"; # Yellow
+    green = "#40a02b"; # Green
+    teal = "#179299"; # Teal
+    sky = "#04a5e5"; # Sky
+    sapphire = "#209fb5"; # Sapphire
+    blue = "#1e66f5"; # Blue
+    lavender = "#7287fd"; # Lavender
   };
-
-in
-{
+in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # System-level theme configuration
     {
@@ -82,22 +81,22 @@ in
       # Console colors (adapted for light theme)
       console = {
         colors = [
-          colors.surface2      # black
-          colors.red          # red
-          colors.green        # green
-          colors.yellow       # yellow
-          colors.blue         # blue
-          colors.mauve        # magenta
-          colors.teal         # cyan
-          colors.text         # white
-          colors.overlay1     # bright black
-          colors.red          # bright red
-          colors.green        # bright green
-          colors.yellow       # bright yellow
-          colors.blue         # bright blue
-          colors.mauve        # bright magenta
-          colors.teal         # bright cyan
-          colors.text         # bright white
+          colors.surface2 # black
+          colors.red # red
+          colors.green # green
+          colors.yellow # yellow
+          colors.blue # blue
+          colors.mauve # magenta
+          colors.teal # cyan
+          colors.text # white
+          colors.overlay1 # bright black
+          colors.red # bright red
+          colors.green # bright green
+          colors.yellow # bright yellow
+          colors.blue # bright blue
+          colors.mauve # bright magenta
+          colors.teal # bright cyan
+          colors.text # bright white
         ];
       };
     }
@@ -325,8 +324,8 @@ in
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = true;
-          selectedLineBgColor = [ colors.surface0 ];
-          selectedRangeBgColor = [ colors.surface0 ];
+          selectedLineBgColor = [colors.surface0];
+          selectedRangeBgColor = [colors.surface0];
         };
       };
 

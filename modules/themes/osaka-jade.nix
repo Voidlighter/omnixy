@@ -1,54 +1,53 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Osaka Jade theme for OmniXY
 # A sophisticated green-tinted dark theme with jade accents
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix { inherit config pkgs lib; };
+  omnixy = import ../helpers.nix {inherit config pkgs lib;};
 
   # Osaka Jade color palette
   colors = {
     # Base colors - dark with jade undertones
-    bg = "#0f1419";          # Very dark background with slight jade tint
-    bg_light = "#1a2026";    # Lighter background
-    bg_lighter = "#252d33";  # Even lighter background
-    bg_accent = "#2d3640";   # Accent background
+    bg = "#0f1419"; # Very dark background with slight jade tint
+    bg_light = "#1a2026"; # Lighter background
+    bg_lighter = "#252d33"; # Even lighter background
+    bg_accent = "#2d3640"; # Accent background
 
     # Foreground colors
-    fg = "#c9c7cd";          # Light foreground
-    fg_dim = "#828691";      # Dimmed foreground
-    fg_muted = "#5c6166";    # Muted foreground
+    fg = "#c9c7cd"; # Light foreground
+    fg_dim = "#828691"; # Dimmed foreground
+    fg_muted = "#5c6166"; # Muted foreground
 
     # Jade accent colors
-    jade = "#71CEAD";        # Main jade accent (from omarchy)
-    jade_light = "#8dd4b8";  # Light jade
-    jade_dark = "#5ba896";   # Dark jade
-    jade_muted = "#4a8f7d";  # Muted jade
+    jade = "#71CEAD"; # Main jade accent (from omarchy)
+    jade_light = "#8dd4b8"; # Light jade
+    jade_dark = "#5ba896"; # Dark jade
+    jade_muted = "#4a8f7d"; # Muted jade
 
     # Supporting colors
-    teal = "#4fd6be";        # Teal
-    mint = "#88e5d3";        # Mint green
-    seafoam = "#a0f0e0";     # Seafoam
+    teal = "#4fd6be"; # Teal
+    mint = "#88e5d3"; # Mint green
+    seafoam = "#a0f0e0"; # Seafoam
 
     # Status colors - jade-tinted
-    red = "#f07178";         # Error red
-    orange = "#ffb454";      # Warning orange
-    yellow = "#e6c384";      # Attention yellow
-    green = "#71CEAD";       # Success (using jade)
-    blue = "#6bb6ff";        # Info blue
-    purple = "#c991e1";      # Purple
-    cyan = "#71CEAD";        # Cyan (using jade)
+    red = "#f07178"; # Error red
+    orange = "#ffb454"; # Warning orange
+    yellow = "#e6c384"; # Attention yellow
+    green = "#71CEAD"; # Success (using jade)
+    blue = "#6bb6ff"; # Info blue
+    purple = "#c991e1"; # Purple
+    cyan = "#71CEAD"; # Cyan (using jade)
 
     # Special UI colors
-    border = "#2d3640";      # Border color
-    shadow = "#0a0d11";      # Shadow color
+    border = "#2d3640"; # Border color
+    shadow = "#0a0d11"; # Shadow color
   };
-
-in
-{
+in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # System-level theme configuration
     {
@@ -81,22 +80,22 @@ in
       # Console colors
       console = {
         colors = [
-          colors.bg_light    # black
-          colors.red         # red
-          colors.green       # green
-          colors.yellow      # yellow
-          colors.blue        # blue
-          colors.purple      # magenta
-          colors.jade        # cyan (using jade)
-          colors.fg_dim      # white
-          colors.bg_lighter  # bright black
-          colors.red         # bright red
-          colors.jade_light  # bright green (jade)
-          colors.yellow      # bright yellow
-          colors.blue        # bright blue
-          colors.purple      # bright magenta
-          colors.seafoam     # bright cyan
-          colors.fg          # bright white
+          colors.bg_light # black
+          colors.red # red
+          colors.green # green
+          colors.yellow # yellow
+          colors.blue # blue
+          colors.purple # magenta
+          colors.jade # cyan (using jade)
+          colors.fg_dim # white
+          colors.bg_lighter # bright black
+          colors.red # bright red
+          colors.jade_light # bright green (jade)
+          colors.yellow # bright yellow
+          colors.blue # bright blue
+          colors.purple # bright magenta
+          colors.seafoam # bright cyan
+          colors.fg # bright white
         ];
       };
     }
@@ -320,8 +319,8 @@ in
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = false;
-          selectedLineBgColor = [ colors.bg_lighter ];
-          selectedRangeBgColor = [ colors.bg_lighter ];
+          selectedLineBgColor = [colors.bg_lighter];
+          selectedRangeBgColor = [colors.bg_lighter];
         };
       };
 

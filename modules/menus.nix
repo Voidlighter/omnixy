@@ -1,15 +1,15 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Interactive menu system for OmniXY
 # Terminal-based menus for system management and productivity
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix { inherit config pkgs lib; };
-in
-{
+  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+in {
   config = mkIf (cfg.enable or true) {
     # Interactive menu scripts
     environment.systemPackages = [

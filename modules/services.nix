@@ -1,11 +1,12 @@
-{ config, pkgs, lib, ... }:
-
-with lib;
-
-let
-  cfg = config.omnixy;
-in
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.omnixy;
+in {
   # XDG Desktop Portals (required for Flatpak)
   xdg.portal = {
     enable = true;
@@ -67,7 +68,6 @@ in
       ];
     };
 
-
     # Sound
     pipewire = {
       enable = true;
@@ -84,7 +84,7 @@ in
     resolved = {
       enable = true;
       dnssec = "true";
-      domains = [ "~." ];
+      domains = ["~."];
       fallbackDns = [
         "1.1.1.1"
         "8.8.8.8"
@@ -202,7 +202,7 @@ in
     # System daemons
     dbus = {
       enable = true;
-      packages = with pkgs; [ dconf ];
+      packages = with pkgs; [dconf];
     };
 
     # Avahi for network discovery
@@ -224,7 +224,7 @@ in
     #   enable = true;
     #   allowReboot = false;
     #   dates = "04:00";
-    #   flake = "/etc/nixos#laserbeak";
+    #   flake = "/etc/nixos#veridia";
     # };
 
     # Earlyoom - out of memory killer
@@ -260,7 +260,7 @@ in
     # Automatic cleanup
     timers.clear-tmp = {
       description = "Clear /tmp weekly";
-      wantedBy = [ "timers.target" ];
+      wantedBy = ["timers.target"];
       timerConfig = {
         OnCalendar = "weekly";
         Persistent = true;
@@ -278,8 +278,8 @@ in
     # Custom Omarchy services
     services.omnixy-init = {
       description = "Omarchy initialization service";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
+      wantedBy = ["multi-user.target"];
+      after = ["network.target"];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;

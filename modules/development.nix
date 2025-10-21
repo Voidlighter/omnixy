@@ -1,12 +1,13 @@
-{ config, pkgs, lib, ... }:
-
-with lib;
-
-let
-  cfg = config.omnixy;
-  omnixy = import ./helpers.nix { inherit config pkgs lib; };
-in
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.omnixy;
+  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+in {
   config = omnixy.withFeature "coding" {
     # Development tools
     environment.systemPackages = with pkgs; [
@@ -388,14 +389,14 @@ in
       enable = true;
       enableOnBoot = true;
       daemon.settings = {
-        features = { buildkit = true; };
-        registry-mirrors = [ "https://mirror.gcr.io" ];
+        features = {buildkit = true;};
+        registry-mirrors = ["https://mirror.gcr.io"];
       };
 
       autoPrune = {
         enable = true;
         dates = "weekly";
-        flags = [ "--all" ];
+        flags = ["--all"];
       };
     };
 
@@ -469,6 +470,5 @@ in
 
     # Enable lorri for automatic nix-shell
     services.lorri.enable = true;
-
   };
 }

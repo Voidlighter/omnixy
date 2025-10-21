@@ -15,7 +15,7 @@ This repository contains OmniXY NixOS (https://github.com/TheArctesian/omnixy), 
 ### System Management
 ```bash
 # Rebuild system configuration
-sudo nixos-rebuild switch --flake /etc/nixos#laserbeak
+sudo nixos-rebuild switch --flake /etc/nixos#veridia
 omnixy-rebuild  # Convenience wrapper
 
 # Update system and flake inputs
@@ -42,7 +42,7 @@ omnixy-help  # Direct command
 ### Development Workflows
 ```bash
 # Test configuration changes
-nixos-rebuild build --flake .#laserbeak  # Build without switching
+nixos-rebuild build --flake .#veridia  # Build without switching
 
 # Enter development shell
 nix develop  # Uses flake.nix devShell
@@ -138,7 +138,7 @@ The configuration is split into focused modules:
 1. **System packages**: Add to `modules/packages.nix` in appropriate category
 2. **User packages**: Add to `home.nix` home.packages
 3. **Development only**: Add to devShell in flake.nix
-4. Always rebuild/test: `nixos-rebuild build --flake .#laserbeak`
+4. Always rebuild/test: `nixos-rebuild build --flake .#veridia`
 
 ### Creating Modules
 1. Follow NixOS module structure with options and config sections
@@ -165,8 +165,8 @@ The configuration is split into focused modules:
 - Export packages and apps for external consumption
 
 ### Testing Changes
-- Build configuration: `nixos-rebuild build --flake .#laserbeak`
-- Test in VM: `nixos-rebuild build-vm --flake .#laserbeak`
+- Build configuration: `nixos-rebuild build --flake .#veridia`
+- Test in VM: `nixos-rebuild build-vm --flake .#veridia`
 - Run VM: `./result/bin/run-omnixy-vm` or use the linked script in /nix/store
 - Check evaluation: `nix flake check`
 - Format code: `nixpkgs-fmt .` or `alejandra .`
@@ -195,7 +195,7 @@ The configuration is split into focused modules:
 - Bootstrap script: `./boot.sh` - Downloads and runs installer on fresh NixOS
 - Interactive installer: `./install.sh` - Full styled installer with theme selection
 - Simple installer: `./install-simple.sh` - Unix-philosophy compliant, scriptable installer
-- Manual flake install: `sudo nixos-rebuild switch --flake github:TheArctesian/omnixy#laserbeak`
+- Manual flake install: `sudo nixos-rebuild switch --flake github:TheArctesian/omnixy#veridia`
 
 ### ISO Building
 ```bash

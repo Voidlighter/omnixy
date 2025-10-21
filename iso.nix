@@ -1,13 +1,16 @@
 # OmniXY NixOS Live ISO Configuration
 # This creates a bootable ISO image with OmniXY pre-installed
-
-{ config, pkgs, lib, modulesPath, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  modulesPath,
+  ...
+}: {
   imports = [
     # Include the basic ISO image module (without Calamares to avoid conflicts)
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
-    
+
     # OmniXY modules (lib must be first to provide helpers)
     ./modules/lib.nix
     ./modules/core.nix
@@ -20,7 +23,7 @@
     ./modules/desktop/hyprland.nix
     ./modules/packages.nix
     ./modules/development.nix
-    ./modules/themes/tokyo-night.nix  # Default theme for ISO
+    ./modules/themes/tokyo-night.nix # Default theme for ISO
     ./modules/users.nix
     ./modules/services.nix
     ./modules/hardware
@@ -30,18 +33,19 @@
   isoImage = {
     # ISO image settings
     volumeID = "OMNIXY_${lib.toUpper config.system.nixos.label}";
-    
+
     # Boot configuration
     makeEfiBootable = true;
     makeUsbBootable = true;
-    
+
     # Include additional files
     includeSystemBuildDependencies = false;
-    
+
     # Boot splash (optional)
-    splashImage = if builtins.pathExists ./assets/logo.png 
-                  then ./assets/logo.png 
-                  else null;
+    splashImage =
+      if builtins.pathExists ./assets/logo.png
+      then ./assets/logo.png
+      else null;
 
     # Desktop entry for installer
     contents = [
@@ -74,9 +78,9 @@
   # Enable flakes
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
-      
+
       # Binary caches
       substituters = [
         "https://cache.nixos.org"
@@ -96,11 +100,11 @@
     hostName = "omnixy-live";
     networkmanager.enable = true;
     wireless.enable = false; # Disable wpa_supplicant, use NetworkManager
-    
+
     # Enable firewall but allow common services for live session
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 80 443 3000 8080 ];
+      allowedTCPPorts = [22 80 443 3000 8080];
     };
   };
 
@@ -136,10 +140,10 @@
   services = {
     # Disable greetd from main config
     greetd.enable = lib.mkForce false;
-    
+
     # Enable auto-login for live session
     getty.autologinUser = "nixos";
-    
+
     # Keep X11 disabled - pure Wayland
     xserver.enable = lib.mkForce false;
   };
@@ -163,7 +167,7 @@
       export XDG_SESSION_TYPE=wayland
       export XDG_SESSION_DESKTOP=Hyprland
       export XDG_CURRENT_DESKTOP=Hyprland
-      
+
       # Start Hyprland
       exec ${pkgs.hyprland}/bin/Hyprland
     fi
@@ -180,8 +184,8 @@
     enable = true;
     settings = {
       PermitRootLogin = "no";
-      PasswordAuthentication = lib.mkForce true;  # Override core.nix setting for ISO
-      PermitEmptyPasswords = lib.mkForce true;   # For live session only
+      PasswordAuthentication = lib.mkForce true; # Override core.nix setting for ISO
+      PermitEmptyPasswords = lib.mkForce true; # For live session only
     };
   };
 
@@ -191,10 +195,10 @@
     user = "nixos"; # Live session user
     theme = "tokyo-night";
     displayManager = "gdm"; # Override default for live session
-    
+
     # Use developer preset for maximum features showcase
     preset = "everything";
-    
+
     # Security configuration (relaxed for live session)
     security = {
       enable = true;
@@ -205,7 +209,7 @@
         faillock.enable = false;
       };
     };
-    
+
     # Package configuration
     packages = {
       # Don't exclude anything for the live session showcase
@@ -218,33 +222,33 @@
     # Installation tools
     gparted
     gnome-disk-utility
-    
+
     # Text editors for configuration
     nano
     vim
-    
+
     # Network tools
     wget
     curl
-    
+
     # File managers
     nautilus
-    
+
     # System information
     neofetch
     lshw
-    
+
     # Terminal emulators (fallback)
     gnome-terminal
-    
+
     # Web browser for documentation
     firefox
-    
+
     # OmniXY installer script
     (pkgs.writeShellScriptBin "omnixy-installer" ''
       #!/usr/bin/env bash
       set -e
-      
+
       echo "🚀 OmniXY NixOS Installer"
       echo "========================="
       echo ""
@@ -252,20 +256,20 @@
       echo ""
       echo "⚠️  WARNING: This will modify your disk partitions!"
       echo ""
-      
+
       read -p "Do you want to continue? (y/N): " -n 1 -r
       echo
-      
+
       if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         echo "Installation cancelled."
         exit 1
       fi
-      
+
       # Launch the graphical installer
       echo "🖥️  Launching graphical installer..."
       echo "   Follow the on-screen instructions to install OmniXY."
       echo ""
-      
+
       # Use Calamares if available, otherwise provide manual instructions
       if command -v calamares &> /dev/null; then
         sudo calamares
@@ -284,15 +288,15 @@
         echo "5. Edit configuration.nix to set your username and theme"
         echo ""
         echo "6. Install NixOS:"
-        echo "   sudo nixos-install --flake /mnt/etc/nixos#laserbeak"
+        echo "   sudo nixos-install --flake /mnt/etc/nixos#veridia"
         echo ""
         echo "7. Reboot and enjoy OmniXY!"
-        
+
         read -p "Press Enter to open gparted for disk partitioning..."
         sudo gparted
       fi
     '')
-    
+
     # Demo scripts
     (pkgs.writeShellScriptBin "omnixy-demo" ''
       #!/usr/bin/env bash
@@ -322,13 +326,13 @@
   services = {
     # Enable printing support
     printing.enable = true;
-    
+
     # Enable Bluetooth
     blueman.enable = true;
-    
+
     # Enable location services
     geoclue2.enable = true;
-    
+
     # Enable automatic time synchronization
     timesyncd.enable = true;
   };
@@ -337,13 +341,13 @@
   hardware = {
     # Enable all firmware
     enableAllFirmware = true;
-    
+
     # Graphics drivers
     graphics = {
       enable = true;
       enable32Bit = true;
     };
-    
+
     # Bluetooth
     bluetooth = {
       enable = true;
@@ -354,18 +358,31 @@
   # Boot configuration for ISO
   boot = {
     # Support for various filesystems
-    supportedFilesystems = [ "btrfs" "ext4" "xfs" "ntfs" "fat32" "exfat" ];
-    
+    supportedFilesystems = ["btrfs" "ext4" "xfs" "ntfs" "fat32" "exfat"];
+
     # Include lots of modules for hardware compatibility
     initrd.availableKernelModules = [
       # Storage
-      "ahci" "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"
+      "ahci"
+      "xhci_pci"
+      "nvme"
+      "usb_storage"
+      "sd_mod"
+      "rtsx_pci_sdmmc"
       # Graphics
-      "amdgpu" "radeon" "nouveau" "i915"
+      "amdgpu"
+      "radeon"
+      "nouveau"
+      "i915"
       # Network
-      "r8169" "e1000e" "iwlwifi" "ath9k" "ath10k_pci" "rtw88_8822ce"
+      "r8169"
+      "e1000e"
+      "iwlwifi"
+      "ath9k"
+      "ath10k_pci"
+      "rtw88_8822ce"
     ];
-    
+
     # Kernel parameters for better hardware compatibility
     kernelParams = [
       "boot.shell_on_fail"
@@ -374,10 +391,10 @@
       "radeon.modeset=1"
       "amdgpu.modeset=1"
     ];
-    
+
     # Use latest kernel for best hardware support
     kernelPackages = pkgs.linuxPackages_latest;
-    
+
     # Plymouth disabled for ISO to avoid potential issues
     plymouth.enable = false;
   };
@@ -403,7 +420,7 @@
   systemd.services = {
     # Disable networkd-wait-online to speed up boot
     systemd-networkd-wait-online.enable = false;
-    
+
     # Disable some hardware services that might not be needed
     fwupd.enable = false;
   };
@@ -413,7 +430,7 @@
     # Use more aggressive memory reclaim
     "vm.swappiness" = 10;
     "vm.vfs_cache_pressure" = 50;
-    
+
     # Network optimizations
     "net.core.default_qdisc" = "fq";
     "net.ipv4.tcp_congestion_control" = "bbr";

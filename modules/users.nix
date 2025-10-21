@@ -1,11 +1,12 @@
-{ config, pkgs, lib, ... }:
-
-with lib;
-
-let
-  cfg = config.omnixy;
-in
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.omnixy;
+in {
   # User account configuration
   users.users.${cfg.user} = {
     isNormalUser = true;

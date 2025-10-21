@@ -1,11 +1,13 @@
-{ config, pkgs, lib, inputs, ... }:
-
-with lib;
-
-let
-  cfg = config.omnixy.desktop;
-in
 {
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
+with lib; let
+  cfg = config.omnixy.desktop;
+in {
   imports = [
     ./hyprland/autostart.nix
     ./hyprland/bindings.nix
@@ -16,8 +18,8 @@ in
 
     monitors = mkOption {
       type = types.listOf types.str;
-      default = [ ];
-      example = [ "DP-1,1920x1080@144,0x0,1" ];
+      default = [];
+      example = ["DP-1,1920x1080@144,0x0,1"];
       description = "Monitor configuration for Hyprland";
     };
 
@@ -406,87 +408,89 @@ in
       programs.waybar = {
         enable = true;
         systemd.enable = true;
-        settings = [{
-          layer = "top";
-          position = "top";
-          height = 30;
+        settings = [
+          {
+            layer = "top";
+            position = "top";
+            height = 30;
 
-          modules-left = [ "hyprland/workspaces" "hyprland/window" ];
-          modules-center = [ "clock" ];
-          modules-right = [ "network" "bluetooth" "pulseaudio" "backlight" "battery" "tray" ];
+            modules-left = ["hyprland/workspaces" "hyprland/window"];
+            modules-center = ["clock"];
+            modules-right = ["network" "bluetooth" "pulseaudio" "backlight" "battery" "tray"];
 
-          "hyprland/workspaces" = {
-            format = "{icon}";
-            on-click = "activate";
-            format-icons = {
-              "1" = "";
-              "2" = "";
-              "3" = "";
-              "4" = "";
-              "5" = "";
-              urgent = "";
-              default = "";
+            "hyprland/workspaces" = {
+              format = "{icon}";
+              on-click = "activate";
+              format-icons = {
+                "1" = "";
+                "2" = "";
+                "3" = "";
+                "4" = "";
+                "5" = "";
+                urgent = "";
+                default = "";
+              };
             };
-          };
 
-          "hyprland/window" = {
-            max-length = 50;
-            separate-outputs = true;
-          };
-
-          clock = {
-            format = " {:%H:%M}";
-            format-alt = " {:%A, %B %d, %Y (%R)}";
-            tooltip-format = "<tt><small>{calendar}</small></tt>";
-          };
-
-          network = {
-            format-wifi = " {essid}";
-            format-ethernet = " {ifname}";
-            format-disconnected = "⚠ Disconnected";
-            tooltip-format = "{ifname}: {ipaddr}/{cidr}";
-          };
-
-          bluetooth = {
-            format = " {status}";
-            format-connected = " {device_alias}";
-            format-connected-battery = " {device_alias} {device_battery_percentage}%";
-            tooltip-format = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
-            tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
-            tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
-            tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
-          };
-
-          pulseaudio = {
-            format = "{icon} {volume}%";
-            format-muted = "";
-            format-icons = {
-              default = [ "" "" "" ];
+            "hyprland/window" = {
+              max-length = 50;
+              separate-outputs = true;
             };
-            on-click = "pavucontrol";
-          };
 
-          backlight = {
-            format = "{icon} {percent}%";
-            format-icons = [ "" "" "" "" "" "" "" "" "" ];
-          };
-
-          battery = {
-            states = {
-              warning = 30;
-              critical = 15;
+            clock = {
+              format = " {:%H:%M}";
+              format-alt = " {:%A, %B %d, %Y (%R)}";
+              tooltip-format = "<tt><small>{calendar}</small></tt>";
             };
-            format = "{icon} {capacity}%";
-            format-charging = " {capacity}%";
-            format-plugged = " {capacity}%";
-            format-icons = [ "" "" "" "" "" ];
-          };
 
-          tray = {
-            icon-size = 16;
-            spacing = 10;
-          };
-        }];
+            network = {
+              format-wifi = " {essid}";
+              format-ethernet = " {ifname}";
+              format-disconnected = "⚠ Disconnected";
+              tooltip-format = "{ifname}: {ipaddr}/{cidr}";
+            };
+
+            bluetooth = {
+              format = " {status}";
+              format-connected = " {device_alias}";
+              format-connected-battery = " {device_alias} {device_battery_percentage}%";
+              tooltip-format = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
+              tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
+              tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+              tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
+            };
+
+            pulseaudio = {
+              format = "{icon} {volume}%";
+              format-muted = "";
+              format-icons = {
+                default = ["" "" ""];
+              };
+              on-click = "pavucontrol";
+            };
+
+            backlight = {
+              format = "{icon} {percent}%";
+              format-icons = ["" "" "" "" "" "" "" "" ""];
+            };
+
+            battery = {
+              states = {
+                warning = 30;
+                critical = 15;
+              };
+              format = "{icon} {capacity}%";
+              format-charging = " {capacity}%";
+              format-plugged = " {capacity}%";
+              format-icons = ["" "" "" "" ""];
+            };
+
+            tray = {
+              icon-size = 16;
+              spacing = 10;
+            };
+          }
+        ];
 
         style = ''
           * {

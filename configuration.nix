@@ -1,17 +1,18 @@
 # OmniXY NixOS Configuration
 # This is the main NixOS configuration file
 # Edit this file to define what should be installed on your system
-
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   # Import custom modules
-  omnixy = import ./modules { inherit config pkgs lib; };
+  omnixy = import ./modules {inherit config pkgs lib;};
 
   # Current theme - can be changed easily
   currentTheme = "tokyo-night";
-in
-{
+in {
   imports = [
     # Include the results of the hardware scan
     ./hardware-configuration.nix
@@ -41,7 +42,7 @@ in
   # Enable flakes
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
 
       # Binary caches
@@ -87,7 +88,7 @@ in
     # Firewall
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 80 443 3000 8080 ];
+      allowedTCPPorts = [22 80 443 3000 8080];
     };
   };
 
@@ -123,7 +124,7 @@ in
   # Enable the X11 windowing system
   services.xserver = {
     enable = true;
-    excludePackages = [ pkgs.xterm ];
+    excludePackages = [pkgs.xterm];
   };
 
   # Display manager disabled - using tuigreet in services.nix
@@ -134,7 +135,7 @@ in
   # Console configuration
   console = {
     font = "ter-132n";
-    packages = with pkgs; [ terminus_font ];
+    packages = with pkgs; [terminus_font];
     keyMap = "us";
   };
 
@@ -152,7 +153,7 @@ in
     theme = currentTheme;
     displayManager = "tuigreet";
 
-    # FIXME: 
+    # FIXME:
     # Quick Setup - Choose a preset that matches your use case
     preset = "developer"; # Options: minimal, developer, creator, gamer, office, everything
 
@@ -160,19 +161,19 @@ in
     security = {
       enable = true;
       fingerprint = {
-        enable = true;         # Set to true to enable fingerprint auth
-        autoDetect = true;     # Auto-detect fingerprint hardware
+        enable = true; # Set to true to enable fingerprint auth
+        autoDetect = true; # Auto-detect fingerprint hardware
       };
       fido2 = {
-        enable = false;        # Set to true to enable FIDO2 auth
-        autoDetect = true;     # Auto-detect FIDO2 devices
+        enable = false; # Set to true to enable FIDO2 auth
+        autoDetect = true; # Auto-detect FIDO2 devices
       };
       systemHardening = {
-        enable = true;         # Enable security hardening
+        enable = true; # Enable security hardening
         faillock = {
-          enable = true;       # Enable account lockout protection
-          denyAttempts = 10;   # Lock after 10 failed attempts
-          unlockTime = 120;    # Unlock after 2 minutes
+          enable = true; # Enable account lockout protection
+          denyAttempts = 10; # Lock after 10 failed attempts
+          unlockTime = 120; # Unlock after 2 minutes
         };
       };
     };

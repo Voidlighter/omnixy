@@ -1,11 +1,12 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Shared library module for OmniXY
 # Provides common utilities, helpers, and patterns for other modules
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
 
   # Helper functions for common patterns
@@ -35,21 +36,25 @@ let
 
     # Package filtering with exclusion support
     filterPackages = packages:
-      builtins.filter (pkg:
-        let name = pkg.name or pkg.pname or "unknown";
-        in !(builtins.elem name (cfg.packages.exclude or []))
-      ) packages;
+      builtins.filter (
+        pkg: let
+          name = pkg.name or pkg.pname or "unknown";
+        in
+          !(builtins.elem name (cfg.packages.exclude or []))
+      )
+      packages;
 
     # Create a standardized script with OmniXY branding
-    makeScript = name: description: script: pkgs.writeShellScriptBin name ''
-      #!/usr/bin/env bash
-      # ${description}
-      # Part of OmniXY NixOS configuration
+    makeScript = name: description: script:
+      pkgs.writeShellScriptBin name ''
+        #!/usr/bin/env bash
+        # ${description}
+        # Part of OmniXY NixOS configuration
 
-      set -euo pipefail
+        set -euo pipefail
 
-      ${script}
-    '';
+        ${script}
+      '';
 
     # Standard paths for OmniXY
     paths = {
@@ -62,35 +67,35 @@ let
     # Color scheme mappings (base16 colors to semantic names)
     colors = {
       # Background colors
-      bg = "#1a1b26";        # Primary background
-      bgAlt = "#16161e";     # Alternative background
-      bgAccent = "#2f3549";  # Accent background
+      bg = "#1a1b26"; # Primary background
+      bgAlt = "#16161e"; # Alternative background
+      bgAccent = "#2f3549"; # Accent background
 
       # Foreground colors
-      fg = "#c0caf5";        # Primary foreground
-      fgAlt = "#9aa5ce";     # Alternative foreground
-      fgDim = "#545c7e";     # Dimmed foreground
+      fg = "#c0caf5"; # Primary foreground
+      fgAlt = "#9aa5ce"; # Alternative foreground
+      fgDim = "#545c7e"; # Dimmed foreground
 
       # Accent colors (Tokyo Night defaults, can be overridden by themes)
-      red = "#f7768e";       # Error/danger
-      orange = "#ff9e64";    # Warning
-      yellow = "#e0af68";    # Attention
-      green = "#9ece6a";     # Success
-      cyan = "#7dcfff";      # Info
-      blue = "#7aa2f7";      # Primary accent
-      purple = "#bb9af7";    # Secondary accent
-      brown = "#db4b4b";     # Tertiary accent
+      red = "#f7768e"; # Error/danger
+      orange = "#ff9e64"; # Warning
+      yellow = "#e0af68"; # Attention
+      green = "#9ece6a"; # Success
+      cyan = "#7dcfff"; # Info
+      blue = "#7aa2f7"; # Primary accent
+      purple = "#bb9af7"; # Secondary accent
+      brown = "#db4b4b"; # Tertiary accent
     };
 
     # Standard application categories for consistent organization
     categories = {
-      system = [ "file managers" "terminals" "system monitors" ];
-      development = [ "editors" "version control" "compilers" "debuggers" ];
-      multimedia = [ "media players" "image viewers" "audio tools" "video editors" ];
-      productivity = [ "office suites" "note taking" "calendars" "email" ];
-      communication = [ "messaging" "video calls" "social media" ];
-      gaming = [ "game launchers" "emulators" "performance tools" ];
-      utilities = [ "calculators" "converters" "system tools" ];
+      system = ["file managers" "terminals" "system monitors"];
+      development = ["editors" "version control" "compilers" "debuggers"];
+      multimedia = ["media players" "image viewers" "audio tools" "video editors"];
+      productivity = ["office suites" "note taking" "calendars" "email"];
+      communication = ["messaging" "video calls" "social media"];
+      gaming = ["game launchers" "emulators" "performance tools"];
+      utilities = ["calculators" "converters" "system tools"];
     };
 
     # Standard service patterns
@@ -98,29 +103,30 @@ let
       # Create a basic systemd service with OmniXY defaults
       make = name: serviceConfig: {
         description = serviceConfig.description or "OmniXY ${name} service";
-        wantedBy = serviceConfig.wantedBy or [ "multi-user.target" ];
-        after = serviceConfig.after or [ "network.target" ];
-        serviceConfig = {
-          Type = serviceConfig.type or "simple";
-          User = serviceConfig.user or cfg.user;
-          Group = serviceConfig.group or "users";
-          Restart = serviceConfig.restart or "on-failure";
-          RestartSec = serviceConfig.restartSec or "5";
-        } // (serviceConfig.serviceConfig or {});
+        wantedBy = serviceConfig.wantedBy or ["multi-user.target"];
+        after = serviceConfig.after or ["network.target"];
+        serviceConfig =
+          {
+            Type = serviceConfig.type or "simple";
+            User = serviceConfig.user or cfg.user;
+            Group = serviceConfig.group or "users";
+            Restart = serviceConfig.restart or "on-failure";
+            RestartSec = serviceConfig.restartSec or "5";
+          }
+          // (serviceConfig.serviceConfig or {});
       };
 
       # Create a user service
       user = name: serviceConfig: {
-        home-manager.users.${cfg.user}.systemd.user.services.${name} = (mkHelpers cfg).service.make name (serviceConfig // {
-          wantedBy = [ "default.target" ];
-          after = [ "graphical-session.target" ];
-        });
+        home-manager.users.${cfg.user}.systemd.user.services.${name} = (mkHelpers cfg).service.make name (serviceConfig
+          // {
+            wantedBy = ["default.target"];
+            after = ["graphical-session.target"];
+          });
       };
     };
   };
-
-in
-{
+in {
   # Export shared configuration for other modules
   config = {
     # Ensure required directories exist
@@ -144,9 +150,9 @@ in
     # Standard shell aliases that work consistently across modules
     programs.bash.shellAliases = {
       # OmniXY management
-      omnixy-rebuild = "sudo nixos-rebuild switch --flake ${helpers.paths.config}#laserbeak";
-      omnixy-build = "sudo nixos-rebuild build --flake ${helpers.paths.config}#laserbeak";
-      omnixy-test = "sudo nixos-rebuild test --flake ${helpers.paths.config}#laserbeak";
+      omnixy-rebuild = "sudo nixos-rebuild switch --flake ${helpers.paths.config}#veridia";
+      omnixy-build = "sudo nixos-rebuild build --flake ${helpers.paths.config}#veridia";
+      omnixy-test = "sudo nixos-rebuild test --flake ${helpers.paths.config}#veridia";
       omnixy-update = "cd ${helpers.paths.config} && sudo nix flake update";
       omnixy-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
       omnixy-generations = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
@@ -186,9 +192,14 @@ in
         echo "  User home: ${helpers.userPath ""}"
         echo ""
         echo "Features:"
-        ${concatStringsSep "\n" (mapAttrsToList (name: enabled:
-          ''echo "  ${name}: ${if enabled then "✅" else "❌"}"''
-        ) cfg.features)}
+        ${concatStringsSep "\n" (mapAttrsToList (
+            name: enabled: ''echo "  ${name}: ${
+                if enabled
+                then "✅"
+                else "❌"
+              }"''
+          )
+          cfg.features)}
       '')
     ];
   };

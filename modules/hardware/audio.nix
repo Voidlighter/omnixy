@@ -1,8 +1,10 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; {
   options.hardware.audio.pipewire.enable = mkEnableOption "PipeWire audio system";
 
   config = mkIf config.hardware.audio.pipewire.enable {

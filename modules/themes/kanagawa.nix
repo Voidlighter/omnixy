@@ -1,25 +1,26 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Kanagawa theme for OmniXY
 # A dark colorscheme inspired by the colors of the famous painting by Katsushika Hokusai
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix { inherit config pkgs lib; };
+  omnixy = import ../helpers.nix {inherit config pkgs lib;};
 
   # Kanagawa color palette
   colors = {
     # Background colors
-    bg = "#1f1f28";        # Dark background (sumiInk0)
-    bg_dark = "#16161d";   # Darker background (sumiInk1)
-    bg_light = "#2a2a37";  # Lighter background (sumiInk3)
+    bg = "#1f1f28"; # Dark background (sumiInk0)
+    bg_dark = "#16161d"; # Darker background (sumiInk1)
+    bg_light = "#2a2a37"; # Lighter background (sumiInk3)
     bg_visual = "#2d4f67"; # Visual selection (waveBlue1)
 
     # Foreground colors
-    fg = "#dcd7ba";        # Main foreground (fujiWhite)
-    fg_dim = "#c8c093";    # Dimmed foreground (fujiGray)
+    fg = "#dcd7ba"; # Main foreground (fujiWhite)
+    fg_dim = "#c8c093"; # Dimmed foreground (fujiGray)
     fg_reverse = "#223249"; # Reverse foreground (waveBlue2)
 
     # Wave colors (blues)
@@ -29,29 +30,27 @@ let
     wave_aqua2 = "#7aa89f"; # Light aqua
 
     # Autumn colors (reds, oranges, yellows)
-    autumn_red = "#c34043";   # Red
+    autumn_red = "#c34043"; # Red
     autumn_orange = "#dca561"; # Orange
     autumn_yellow = "#c0a36e"; # Yellow
-    autumn_green = "#76946a";  # Green
+    autumn_green = "#76946a"; # Green
 
     # Spring colors (greens)
-    spring_blue = "#7e9cd8";   # Blue
+    spring_blue = "#7e9cd8"; # Blue
     spring_violet1 = "#957fb8"; # Violet
     spring_violet2 = "#b8b4d0"; # Light violet
-    spring_green = "#98bb6c";   # Green
+    spring_green = "#98bb6c"; # Green
 
     # Ronin colors (grays)
     ronin_yellow = "#ff9e3b"; # Bright orange/yellow
-    dragon_blue = "#658594";   # Muted blue
-    old_white = "#c8c093";     # Old paper white
+    dragon_blue = "#658594"; # Muted blue
+    old_white = "#c8c093"; # Old paper white
 
     # Special colors
-    samurai_red = "#e82424";   # Bright red for errors
-    ronin_gray = "#727169";    # Gray for comments
+    samurai_red = "#e82424"; # Bright red for errors
+    ronin_gray = "#727169"; # Gray for comments
   };
-
-in
-{
+in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # System-level theme configuration
     {
@@ -87,22 +86,22 @@ in
       # Console colors
       console = {
         colors = [
-          colors.bg_dark        # black
-          colors.autumn_red     # red
-          colors.autumn_green   # green
-          colors.autumn_yellow  # yellow
-          colors.spring_blue    # blue
+          colors.bg_dark # black
+          colors.autumn_red # red
+          colors.autumn_green # green
+          colors.autumn_yellow # yellow
+          colors.spring_blue # blue
           colors.spring_violet1 # magenta
-          colors.wave_aqua1     # cyan
-          colors.old_white      # white
-          colors.ronin_gray     # bright black
-          colors.samurai_red    # bright red
-          colors.spring_green   # bright green
-          colors.ronin_yellow   # bright yellow
-          colors.spring_blue    # bright blue
+          colors.wave_aqua1 # cyan
+          colors.old_white # white
+          colors.ronin_gray # bright black
+          colors.samurai_red # bright red
+          colors.spring_green # bright green
+          colors.ronin_yellow # bright yellow
+          colors.spring_blue # bright blue
           colors.spring_violet2 # bright magenta
-          colors.wave_aqua2     # bright cyan
-          colors.fg             # bright white
+          colors.wave_aqua2 # bright cyan
+          colors.fg # bright white
         ];
       };
     }
@@ -330,8 +329,8 @@ in
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = false;
-          selectedLineBgColor = [ colors.bg_visual ];
-          selectedRangeBgColor = [ colors.bg_visual ];
+          selectedLineBgColor = [colors.bg_visual];
+          selectedRangeBgColor = [colors.bg_visual];
         };
       };
 

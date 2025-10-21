@@ -29,12 +29,12 @@ On an existing NixOS system:
 
 ```bash
 # Install directly from GitHub
-sudo nixos-rebuild switch --flake github:thearctesian/omnixy#laserbeak
+sudo nixos-rebuild switch --flake github:thearctesian/omnixy#veridia
 
 # Or clone and install locally
 git clone https://github.com/thearctesian/omnixy
 cd omnixy
-sudo nixos-rebuild switch --flake .#laserbeak
+sudo nixos-rebuild switch --flake .#veridia
 ```
 
 ### Building a Custom ISO
@@ -248,10 +248,10 @@ cp modules/themes/tokyo-night.nix modules/themes/my-theme.nix
 
 ```bash
 # Test configuration without switching
-nixos-rebuild build --flake .#laserbeak
+nixos-rebuild build --flake .#veridia
 
 # Test in virtual machine
-nixos-rebuild build-vm --flake .#laserbeak
+nixos-rebuild build-vm --flake .#veridia
 ./result/bin/run-omnixy-vm
 
 # Check flake evaluation

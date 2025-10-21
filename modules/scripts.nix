@@ -1,15 +1,15 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Essential system utility scripts for OmniXY
 # Convenient scripts for system management and productivity
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix { inherit config pkgs lib; };
-in
-{
+  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+in {
   config = mkIf (cfg.enable or true) {
     # System utility scripts
     environment.systemPackages = [
@@ -71,7 +71,7 @@ in
         sudo nix flake update
 
         echo "  ├─ Rebuilding system..."
-        sudo nixos-rebuild switch --flake .#laserbeak
+        sudo nixos-rebuild switch --flake .#veridia
 
         echo "  └─ Update complete!"
 
@@ -95,7 +95,7 @@ in
         fi
 
         # Build and switch
-        sudo nixos-rebuild switch --flake .#laserbeak
+        sudo nixos-rebuild switch --flake .#veridia
 
         if [ $? -eq 0 ]; then
           echo "✅ Rebuild successful!"
@@ -113,7 +113,7 @@ in
         cd /etc/nixos || { echo "❌ Not in /etc/nixos directory"; exit 1; }
 
         # Build without switching
-        sudo nixos-rebuild build --flake .#laserbeak
+        sudo nixos-rebuild build --flake .#veridia
 
         if [ $? -eq 0 ]; then
           echo "✅ Build test successful!"
@@ -184,7 +184,7 @@ in
         echo "  ├─ Rebuilding system..."
 
         # Rebuild with new theme
-        cd /etc/nixos && sudo nixos-rebuild switch --flake .#laserbeak
+        cd /etc/nixos && sudo nixos-rebuild switch --flake .#veridia
 
         if [ $? -eq 0 ]; then
           echo "  ├─ Theme switched successfully!"

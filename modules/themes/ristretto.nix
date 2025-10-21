@@ -1,56 +1,55 @@
-{ config, pkgs, lib, ... }:
-
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Ristretto theme for OmniXY
 # A warm, coffee-inspired theme with rich brown and cream tones
-
-with lib;
-
-let
+with lib; let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix { inherit config pkgs lib; };
+  omnixy = import ../helpers.nix {inherit config pkgs lib;};
 
   # Ristretto color palette - inspired by coffee and warm tones
   colors = {
     # Base colors - warm browns and creams
-    bg = "#2b1f17";          # Dark coffee background
-    bg_light = "#3d2a1f";    # Lighter coffee
-    bg_lighter = "#4f3426";  # Even lighter coffee
-    bg_accent = "#5d3e2e";   # Accent background
+    bg = "#2b1f17"; # Dark coffee background
+    bg_light = "#3d2a1f"; # Lighter coffee
+    bg_lighter = "#4f3426"; # Even lighter coffee
+    bg_accent = "#5d3e2e"; # Accent background
 
     # Foreground colors - cream and light browns
-    fg = "#e6d9db";          # Main foreground (from omarchy)
-    fg_dim = "#c4b5a0";      # Dimmed cream
-    fg_muted = "#a08d7a";    # Muted cream
+    fg = "#e6d9db"; # Main foreground (from omarchy)
+    fg_dim = "#c4b5a0"; # Dimmed cream
+    fg_muted = "#a08d7a"; # Muted cream
 
     # Coffee-inspired accent colors
-    cream = "#e6d9db";       # Cream (main accent from omarchy)
-    latte = "#d4c4b0";       # Latte
-    mocha = "#b8997a";       # Mocha
-    espresso = "#8b6f47";    # Espresso
-    cappuccino = "#c9a96e";  # Cappuccino
+    cream = "#e6d9db"; # Cream (main accent from omarchy)
+    latte = "#d4c4b0"; # Latte
+    mocha = "#b8997a"; # Mocha
+    espresso = "#8b6f47"; # Espresso
+    cappuccino = "#c9a96e"; # Cappuccino
 
     # Warm accent colors
-    amber = "#d4a574";       # Amber
-    caramel = "#c19a6b";     # Caramel
-    cinnamon = "#a67c5a";    # Cinnamon
-    vanilla = "#e8dcc6";     # Vanilla
+    amber = "#d4a574"; # Amber
+    caramel = "#c19a6b"; # Caramel
+    cinnamon = "#a67c5a"; # Cinnamon
+    vanilla = "#e8dcc6"; # Vanilla
 
     # Status colors - coffee-tinted
-    red = "#d67c7c";         # Warm red
-    orange = "#d4925a";      # Coffee orange
-    yellow = "#d4c969";      # Warm yellow
-    green = "#81a56a";       # Muted green
-    blue = "#6b8bb3";        # Muted blue
-    purple = "#a67cb8";      # Muted purple
-    cyan = "#6ba3a3";        # Muted cyan
+    red = "#d67c7c"; # Warm red
+    orange = "#d4925a"; # Coffee orange
+    yellow = "#d4c969"; # Warm yellow
+    green = "#81a56a"; # Muted green
+    blue = "#6b8bb3"; # Muted blue
+    purple = "#a67cb8"; # Muted purple
+    cyan = "#6ba3a3"; # Muted cyan
 
     # Special UI colors
-    border = "#5d3e2e";      # Border color
-    shadow = "#1a1008";      # Shadow color
+    border = "#5d3e2e"; # Border color
+    shadow = "#1a1008"; # Shadow color
   };
-
-in
-{
+in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # System-level theme configuration
     {
@@ -83,22 +82,22 @@ in
       # Console colors
       console = {
         colors = [
-          colors.bg_light    # black
-          colors.red         # red
-          colors.green       # green
-          colors.yellow      # yellow
-          colors.blue        # blue
-          colors.purple      # magenta
-          colors.cyan        # cyan
-          colors.fg_dim      # white
-          colors.espresso    # bright black
-          colors.red         # bright red
-          colors.green       # bright green
-          colors.amber       # bright yellow
-          colors.blue        # bright blue
-          colors.purple      # bright magenta
-          colors.cyan        # bright cyan
-          colors.fg          # bright white
+          colors.bg_light # black
+          colors.red # red
+          colors.green # green
+          colors.yellow # yellow
+          colors.blue # blue
+          colors.purple # magenta
+          colors.cyan # cyan
+          colors.fg_dim # white
+          colors.espresso # bright black
+          colors.red # bright red
+          colors.green # bright green
+          colors.amber # bright yellow
+          colors.blue # bright blue
+          colors.purple # bright magenta
+          colors.cyan # bright cyan
+          colors.fg # bright white
         ];
       };
     }
@@ -322,8 +321,8 @@ in
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = false;
-          selectedLineBgColor = [ colors.bg_lighter ];
-          selectedRangeBgColor = [ colors.bg_lighter ];
+          selectedLineBgColor = [colors.bg_lighter];
+          selectedRangeBgColor = [colors.bg_lighter];
         };
       };
 

@@ -1,6 +1,10 @@
-{ config, pkgs, lib, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: {
   # Home Manager needs a bit of information about you and the paths it should manage
 
   # FIXME: Change "myuser" to your username
@@ -151,7 +155,7 @@
       find = "fd";
 
       # NixOS specific
-      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#laserbeak";
+      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#veridia";
       update = "nix flake update";
       clean = "nix-collect-garbage -d";
 
@@ -222,7 +226,10 @@
     enable = true;
     settings = {
       window = {
-        padding = { x = 10; y = 10; };
+        padding = {
+          x = 10;
+          y = 10;
+        };
         opacity = 0.95;
         decorations = "none";
       };
@@ -311,7 +318,7 @@
       "editor.fontLigatures" = true;
       "editor.formatOnSave" = true;
       "editor.minimap.enabled" = false;
-      "editor.rulers" = [ 80 120 ];
+      "editor.rulers" = [80 120];
       "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
       "vim.enableNeovim" = true;
     };
