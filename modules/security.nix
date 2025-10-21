@@ -1,14 +1,10 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 # OmniXY Security Configuration
 # Fingerprint, FIDO2, and system hardening features
-with lib; let
+with lib;
+let
   cfg = config.omnixy.security;
-  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+  omnixy = import ./helpers.nix { inherit config pkgs lib; };
 
   # Hardware detection helpers
   hasFingerprintReader = ''
@@ -22,105 +18,106 @@ with lib; let
   # Security management scripts
   securityScripts = [
     # Fingerprint management
-    (omnixy.makeScript "omnixy-fingerprint" "Manage fingerprint authentication" ''
-      case "$1" in
-        "setup"|"enroll")
-          echo "🔐 OmniXY Fingerprint Setup"
-          echo "═══════════════════════════"
+    (omnixy.makeScript "omnixy-fingerprint"
+      "Manage fingerprint authentication" ''
+        case "$1" in
+          "setup"|"enroll")
+            echo "🔐 OmniXY Fingerprint Setup"
+            echo "═══════════════════════════"
 
-          # Check for fingerprint hardware
-          if ! (${hasFingerprintReader}); then
-            echo "❌ No fingerprint reader detected!"
-            echo "   Supported devices: Synaptics, Goodix, Elan, Validity sensors"
-            exit 1
-          fi
+            # Check for fingerprint hardware
+            if ! (${hasFingerprintReader}); then
+              echo "❌ No fingerprint reader detected!"
+              echo "   Supported devices: Synaptics, Goodix, Elan, Validity sensors"
+              exit 1
+            fi
 
-          echo "✅ Fingerprint reader detected"
+            echo "✅ Fingerprint reader detected"
 
-          # Check if fprintd service is running
-          if ! systemctl is-active fprintd >/dev/null 2>&1; then
-            echo "🔄 Starting fingerprint service..."
-            sudo systemctl start fprintd
-          fi
+            # Check if fprintd service is running
+            if ! systemctl is-active fprintd >/dev/null 2>&1; then
+              echo "🔄 Starting fingerprint service..."
+              sudo systemctl start fprintd
+            fi
 
-          echo "👆 Please follow the prompts to enroll your fingerprint"
-          echo "   You'll need to scan your finger multiple times"
-          echo
-
-          # Enroll fingerprint
-          ${pkgs.fprintd}/bin/fprintd-enroll "$USER"
-
-          if [ $? -eq 0 ]; then
+            echo "👆 Please follow the prompts to enroll your fingerprint"
+            echo "   You'll need to scan your finger multiple times"
             echo
-            echo "✅ Fingerprint enrolled successfully!"
-            echo "💡 You can now use your fingerprint for:"
-            echo "   - sudo commands"
-            echo "   - System authentication dialogs"
-            echo "   - Screen unlock (if supported)"
-          else
-            echo "❌ Fingerprint enrollment failed"
-            exit 1
-          fi
-          ;;
 
-        "test"|"verify")
-          echo "🔐 Testing fingerprint authentication..."
+            # Enroll fingerprint
+            ${pkgs.fprintd}/bin/fprintd-enroll "$USER"
 
-          if ! (${hasFingerprintReader}); then
-            echo "❌ No fingerprint reader detected!"
-            exit 1
-          fi
+            if [ $? -eq 0 ]; then
+              echo
+              echo "✅ Fingerprint enrolled successfully!"
+              echo "💡 You can now use your fingerprint for:"
+              echo "   - sudo commands"
+              echo "   - System authentication dialogs"
+              echo "   - Screen unlock (if supported)"
+            else
+              echo "❌ Fingerprint enrollment failed"
+              exit 1
+            fi
+            ;;
 
-          echo "👆 Please scan your enrolled finger"
-          ${pkgs.fprintd}/bin/fprintd-verify "$USER"
+          "test"|"verify")
+            echo "🔐 Testing fingerprint authentication..."
 
-          if [ $? -eq 0 ]; then
-            echo "✅ Fingerprint verification successful!"
-          else
-            echo "❌ Fingerprint verification failed"
-            echo "💡 Try: omnixy-fingerprint setup"
-          fi
-          ;;
+            if ! (${hasFingerprintReader}); then
+              echo "❌ No fingerprint reader detected!"
+              exit 1
+            fi
 
-        "remove"|"delete")
-          echo "🗑️  Removing fingerprint data..."
-          ${pkgs.fprintd}/bin/fprintd-delete "$USER"
-          echo "✅ Fingerprint data removed"
-          ;;
+            echo "👆 Please scan your enrolled finger"
+            ${pkgs.fprintd}/bin/fprintd-verify "$USER"
 
-        "list")
-          echo "📋 Enrolled fingerprints:"
-          ${pkgs.fprintd}/bin/fprintd-list "$USER" 2>/dev/null || echo "   No fingerprints enrolled"
-          ;;
+            if [ $? -eq 0 ]; then
+              echo "✅ Fingerprint verification successful!"
+            else
+              echo "❌ Fingerprint verification failed"
+              echo "💡 Try: omnixy-fingerprint setup"
+            fi
+            ;;
 
-        *)
-          echo "🔐 OmniXY Fingerprint Management"
-          echo
-          echo "Usage: omnixy-fingerprint <command>"
-          echo
-          echo "Commands:"
-          echo "  setup, enroll  - Enroll a new fingerprint"
-          echo "  test, verify   - Test fingerprint authentication"
-          echo "  remove, delete - Remove enrolled fingerprints"
-          echo "  list          - List enrolled fingerprints"
-          echo
+          "remove"|"delete")
+            echo "🗑️  Removing fingerprint data..."
+            ${pkgs.fprintd}/bin/fprintd-delete "$USER"
+            echo "✅ Fingerprint data removed"
+            ;;
 
-          # Show hardware status
-          if (${hasFingerprintReader}); then
-            echo "Hardware: ✅ Fingerprint reader detected"
-          else
-            echo "Hardware: ❌ No fingerprint reader found"
-          fi
+          "list")
+            echo "📋 Enrolled fingerprints:"
+            ${pkgs.fprintd}/bin/fprintd-list "$USER" 2>/dev/null || echo "   No fingerprints enrolled"
+            ;;
 
-          # Show service status
-          if systemctl is-active fprintd >/dev/null 2>&1; then
-            echo "Service:  ✅ fprintd running"
-          else
-            echo "Service:  ❌ fprintd not running"
-          fi
-          ;;
-      esac
-    '')
+          *)
+            echo "🔐 OmniXY Fingerprint Management"
+            echo
+            echo "Usage: omnixy-fingerprint <command>"
+            echo
+            echo "Commands:"
+            echo "  setup, enroll  - Enroll a new fingerprint"
+            echo "  test, verify   - Test fingerprint authentication"
+            echo "  remove, delete - Remove enrolled fingerprints"
+            echo "  list          - List enrolled fingerprints"
+            echo
+
+            # Show hardware status
+            if (${hasFingerprintReader}); then
+              echo "Hardware: ✅ Fingerprint reader detected"
+            else
+              echo "Hardware: ❌ No fingerprint reader found"
+            fi
+
+            # Show service status
+            if systemctl is-active fprintd >/dev/null 2>&1; then
+              echo "Service:  ✅ fprintd running"
+            else
+              echo "Service:  ❌ fprintd not running"
+            fi
+            ;;
+        esac
+      '')
 
     # FIDO2 management
     (omnixy.makeScript "omnixy-fido2" "Manage FIDO2/WebAuthn authentication" ''
@@ -358,29 +355,27 @@ in {
 
   config = mkIf (cfg.enable or true) {
     # Security packages and management scripts (consolidated)
-    environment.systemPackages =
-      (with pkgs; [
-        # Fingerprint authentication
-        fprintd
+    environment.systemPackages = (with pkgs; [
+      # Fingerprint authentication
+      fprintd
 
-        # FIDO2/WebAuthn
-        libfido2
-        pam_u2f
+      # FIDO2/WebAuthn
+      libfido2
+      pam_u2f
 
-        # Security utilities
-        usbutils
-        pciutils
-      ])
-      ++ [
-        # Security management scripts defined below
-      ]
-      ++ securityScripts;
+      # Security utilities
+      usbutils
+      pciutils
+    ]) ++ [
+      # Security management scripts defined below
+    ] ++ securityScripts;
 
     # Fingerprint authentication configuration
-    services.fprintd = mkIf (cfg.fingerprint.enable or cfg.fingerprint.autoDetect) {
-      enable = true;
-      package = pkgs.fprintd;
-    };
+    services.fprintd =
+      mkIf (cfg.fingerprint.enable or cfg.fingerprint.autoDetect) {
+        enable = true;
+        package = pkgs.fprintd;
+      };
 
     # Security configuration (consolidated)
     security = {
@@ -410,14 +405,12 @@ in {
       # PAM configuration for authentication methods
       pam = {
         # Login limits for account lockout protection
-        loginLimits = mkIf cfg.systemHardening.faillock.enable [
-          {
-            domain = "*";
-            type = "hard";
-            item = "core";
-            value = "0";
-          }
-        ];
+        loginLimits = mkIf cfg.systemHardening.faillock.enable [{
+          domain = "*";
+          type = "hard";
+          item = "core";
+          value = "0";
+        }];
 
         # PAM services configuration
         services = {
@@ -478,7 +471,9 @@ in {
           system-auth = mkIf cfg.systemHardening.faillock.enable {
             text = mkAfter ''
               auth        required      pam_faillock.so preauth
-              auth        required      pam_faillock.so authfail deny=${toString cfg.systemHardening.faillock.denyAttempts} unlock_time=${toString cfg.systemHardening.faillock.unlockTime}
+              auth        required      pam_faillock.so authfail deny=${
+                toString cfg.systemHardening.faillock.denyAttempts
+              } unlock_time=${toString cfg.systemHardening.faillock.unlockTime}
               account     required      pam_faillock.so
             '';
           };
@@ -491,14 +486,13 @@ in {
       enable = true;
 
       # Essential services (NixOS firewall denies by default)
-      allowedTCPPorts = [22]; # SSH
-      allowedUDPPorts = [53317]; # LocalSend
-      allowedTCPPortRanges = [
-        {
-          from = 53317;
-          to = 53317;
-        } # LocalSend TCP
-      ];
+      allowedTCPPorts = [ 22 ]; # SSH
+      allowedUDPPorts = [ 53317 ]; # LocalSend
+      allowedTCPPortRanges = [{
+        from = 53317;
+        to = 53317;
+      } # LocalSend TCP
+        ];
     };
 
     # Create FIDO2 configuration directory

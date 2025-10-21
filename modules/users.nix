@@ -1,11 +1,6 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.omnixy;
+{ config, pkgs, lib, ... }:
+with lib;
+let cfg = config.omnixy;
 in {
   # User account configuration
   users.users.${cfg.user} = {

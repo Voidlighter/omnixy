@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{ config, pkgs, lib, ... }: {
   # Catppuccin Mocha theme configuration
   config = {
     # Set theme wallpaper
@@ -115,7 +110,7 @@
         theme = {
           name = "Catppuccin-Mocha-Standard-Lavender-Dark";
           package = pkgs.catppuccin-gtk.override {
-            accents = ["lavender"];
+            accents = [ "lavender" ];
             size = "standard";
             variant = "mocha";
           };
@@ -172,18 +167,14 @@
           error_symbol = "[➜](red)";
         };
 
-        directory = {
-          style = "blue";
-        };
+        directory = { style = "blue"; };
 
         git_branch = {
           style = "mauve";
           symbol = " ";
         };
 
-        git_status = {
-          style = "red";
-        };
+        git_status = { style = "red"; };
       };
 
       # Mako notification theme
@@ -204,14 +195,15 @@
     };
 
     # Hyprland theme colors
-    environment.systemPackages = with pkgs; [
-      (writeShellScriptBin "set-catppuccin-colors" ''
-        #!/usr/bin/env bash
-        # Set Catppuccin Mocha colors in Hyprland
-        hyprctl keyword general:col.active_border "rgba(cba6f7ee) rgba(89b4faee) 45deg"
-        hyprctl keyword general:col.inactive_border "rgba(585b70aa)"
-        hyprctl keyword decoration:col.shadow "rgba(1e1e2eee)"
-      '')
-    ];
+    environment.systemPackages = with pkgs;
+      [
+        (writeShellScriptBin "set-catppuccin-colors" ''
+          #!/usr/bin/env bash
+          # Set Catppuccin Mocha colors in Hyprland
+          hyprctl keyword general:col.active_border "rgba(cba6f7ee) rgba(89b4faee) 45deg"
+          hyprctl keyword general:col.inactive_border "rgba(585b70aa)"
+          hyprctl keyword decoration:col.shadow "rgba(1e1e2eee)"
+        '')
+      ];
   };
 }

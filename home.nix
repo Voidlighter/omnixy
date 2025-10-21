@@ -1,10 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  inputs,
-  ...
-}: {
+{ config, pkgs, lib, inputs, ... }: {
   # Home Manager needs a bit of information about you and the paths it should manage
 
   # FIXME: Change "myuser" to your username
@@ -256,10 +250,11 @@
     viAlias = true;
     vimAlias = true;
 
-    plugins = with pkgs.vimPlugins; [
-      # LazyVim will handle most plugins
-      lazy-nvim
-    ];
+    plugins = with pkgs.vimPlugins;
+      [
+        # LazyVim will handle most plugins
+        lazy-nvim
+      ];
 
     extraConfig = ''
       " Bootstrap LazyVim
@@ -318,7 +313,7 @@
       "editor.fontLigatures" = true;
       "editor.formatOnSave" = true;
       "editor.minimap.enabled" = false;
-      "editor.rulers" = [80 120];
+      "editor.rulers" = [ 80 120 ];
       "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
       "vim.enableNeovim" = true;
     };
@@ -391,9 +386,8 @@
     enable = true;
     theme = {
       name = lib.mkDefault "Catppuccin-Mocha-Standard-Blue-dark";
-      package = lib.mkDefault (pkgs.catppuccin-gtk.override {
-        variant = "mocha";
-      });
+      package =
+        lib.mkDefault (pkgs.catppuccin-gtk.override { variant = "mocha"; });
     };
     iconTheme = {
       name = "Papirus-Dark";

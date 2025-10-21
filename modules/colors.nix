@@ -1,13 +1,8 @@
-{
-  config,
-  pkgs,
-  lib,
-  inputs,
-  ...
-}:
-with lib; let
+{ config, pkgs, lib, inputs, ... }:
+with lib;
+let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+  omnixy = import ./helpers.nix { inherit config pkgs lib; };
 
   # Function to generate colors from wallpaper using imagemagick
   generateColorsFromWallpaper = wallpaperPath:
@@ -36,17 +31,15 @@ with lib; let
   };
 
   # Select color scheme based on wallpaper or user preference
-  selectedColorScheme =
-    if cfg.colorScheme != null
-    then cfg.colorScheme
-    else if cfg.wallpaper != null && cfg.features.autoColors
-    then
-      # TODO: Implement actual color analysis
-      # For now, use a sensible default based on theme
-      fallbackColorSchemes.${cfg.theme} or fallbackColorSchemes.dark
-    else
-      # Use theme-based color scheme
-      fallbackColorSchemes.${cfg.theme} or fallbackColorSchemes.dark;
+  selectedColorScheme = if cfg.colorScheme != null then
+    cfg.colorScheme
+  else if cfg.wallpaper != null && cfg.features.autoColors then
+  # TODO: Implement actual color analysis
+  # For now, use a sensible default based on theme
+    fallbackColorSchemes.${cfg.theme} or fallbackColorSchemes.dark
+  else
+  # Use theme-based color scheme
+    fallbackColorSchemes.${cfg.theme} or fallbackColorSchemes.dark;
 in {
   config = mkIf (cfg.enable or true) (mkMerge [
     # User-specific configuration using shared helpers
@@ -57,36 +50,36 @@ in {
       home.packages = omnixy.filterPackages (with pkgs;
         [
           imagemagick # For color extraction from images
-        ]
-        ++ optionals (omnixy.isEnabled "customThemes" || omnixy.isEnabled "wallpaperEffects") [
-          # Additional packages for advanced color analysis
-          python3Packages.pillow # For more sophisticated image analysis
-          python3Packages.colorthief # For extracting color palettes
-        ]
-        ++ optionals (cfg.wallpaper != null) [
-          # Generate wallpaper setter script that respects colors
-          (omnixy.makeScript "set-omnixy-wallpaper" "Set wallpaper with automatic color generation" ''
-            WALLPAPER_PATH="${cfg.wallpaper}"
+        ] ++ optionals (omnixy.isEnabled "customThemes"
+          || omnixy.isEnabled "wallpaperEffects") [
+            # Additional packages for advanced color analysis
+            python3Packages.pillow # For more sophisticated image analysis
+            python3Packages.colorthief # For extracting color palettes
+          ] ++ optionals (cfg.wallpaper != null) [
+            # Generate wallpaper setter script that respects colors
+            (omnixy.makeScript "set-omnixy-wallpaper"
+              "Set wallpaper with automatic color generation" ''
+                WALLPAPER_PATH="${cfg.wallpaper}"
 
-            echo "Setting wallpaper: $WALLPAPER_PATH"
+                echo "Setting wallpaper: $WALLPAPER_PATH"
 
-            # Set wallpaper with swww
-            if command -v swww &> /dev/null; then
-              swww img "$WALLPAPER_PATH" --transition-type wipe --transition-angle 30 --transition-step 90
-            else
-              echo "swww not found, please install swww for wallpaper support"
-            fi
+                # Set wallpaper with swww
+                if command -v swww &> /dev/null; then
+                  swww img "$WALLPAPER_PATH" --transition-type wipe --transition-angle 30 --transition-step 90
+                else
+                  echo "swww not found, please install swww for wallpaper support"
+                fi
 
-            # Optionally generate new colors from wallpaper
-            ${optionalString (omnixy.isEnabled "wallpaperEffects") ''
-              echo "Generating colors from wallpaper..."
-              # This would trigger a system rebuild with new colors
-              # For now, just notify the user
-              echo "Note: Automatic color generation requires system rebuild"
-              echo "Consider adding this wallpaper to your configuration and rebuilding"
-            ''}
-          '')
-        ]);
+                # Optionally generate new colors from wallpaper
+                ${optionalString (omnixy.isEnabled "wallpaperEffects") ''
+                  echo "Generating colors from wallpaper..."
+                  # This would trigger a system rebuild with new colors
+                  # For now, just notify the user
+                  echo "Note: Automatic color generation requires system rebuild"
+                  echo "Consider adding this wallpaper to your configuration and rebuilding"
+                ''}
+              '')
+          ]);
     }))
 
     # System-level configuration
@@ -108,30 +101,21 @@ in {
           echo ""
           echo "Current configuration:"
           echo "  Theme: ${cfg.theme}"
-          echo "  Preset: ${
-            if cfg.preset != null
-            then cfg.preset
-            else "none"
-          }"
+          echo "  Preset: ${if cfg.preset != null then cfg.preset else "none"}"
           echo "  Custom Themes: ${
-            if cfg.features.customThemes or false
-            then "enabled"
-            else "disabled"
+            if cfg.features.customThemes or false then "enabled" else "disabled"
           }"
           echo "  Wallpaper Effects: ${
-            if cfg.features.wallpaperEffects or false
-            then "enabled"
-            else "disabled"
+            if cfg.features.wallpaperEffects or false then
+              "enabled"
+            else
+              "disabled"
           }"
           echo "  Wallpaper: ${
-            if cfg.wallpaper != null
-            then toString cfg.wallpaper
-            else "not set"
+            if cfg.wallpaper != null then toString cfg.wallpaper else "not set"
           }"
           echo "  Color Scheme: ${
-            if cfg.colorScheme != null
-            then "custom"
-            else "theme-based"
+            if cfg.colorScheme != null then "custom" else "theme-based"
           }"
           echo ""
 
@@ -143,7 +127,8 @@ in {
             echo ""
           ''}
 
-          ${optionalString ((cfg.features.wallpaperEffects or false) && cfg.wallpaper == null) ''
+          ${optionalString
+          ((cfg.features.wallpaperEffects or false) && cfg.wallpaper == null) ''
             echo "Wallpaper effects are enabled but no wallpaper is set."
             echo "Set omnixy.wallpaper = /path/to/your/wallpaper.jpg; in your configuration."
             echo ""

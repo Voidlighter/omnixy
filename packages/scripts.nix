@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}:
+{ pkgs, lib, ... }:
 # OmniXY utility scripts as a Nix package
 pkgs.stdenv.mkDerivation rec {
   pname = "omnixy-scripts";

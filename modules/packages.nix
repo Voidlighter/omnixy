@@ -1,29 +1,33 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib; let
+{ config, pkgs, lib, ... }:
+with lib;
+let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+  omnixy = import ./helpers.nix { inherit config pkgs lib; };
 in {
   options.omnixy.packages = {
     enable = mkEnableOption "OmniXY packages";
 
     exclude = mkOption {
       type = types.listOf types.str;
-      default = [];
-      example = ["discord" "spotify" "steam"];
+      default = [ ];
+      example = [ "discord" "spotify" "steam" ];
       description = "List of package names to exclude from installation";
     };
 
     categories = {
-      base = mkEnableOption "Base system packages" // {default = true;};
-      development = mkEnableOption "Development packages" // {default = omnixy.isEnabled "coding";};
-      multimedia = mkEnableOption "Multimedia packages" // {default = omnixy.isEnabled "media";};
-      productivity = mkEnableOption "Productivity packages" // {default = omnixy.isEnabled "office" || omnixy.isEnabled "communication";};
-      gaming = mkEnableOption "Gaming packages" // {default = omnixy.isEnabled "gaming";};
+      base = mkEnableOption "Base system packages" // { default = true; };
+      development = mkEnableOption "Development packages" // {
+        default = omnixy.isEnabled "coding";
+      };
+      multimedia = mkEnableOption "Multimedia packages" // {
+        default = omnixy.isEnabled "media";
+      };
+      productivity = mkEnableOption "Productivity packages" // {
+        default = omnixy.isEnabled "office" || omnixy.isEnabled "communication";
+      };
+      gaming = mkEnableOption "Gaming packages" // {
+        default = omnixy.isEnabled "gaming";
+      };
     };
   };
 
@@ -308,8 +312,7 @@ in {
           gamemode
           discord
           obs-studio
-        ]
-      ); # End of filterPackages
+        ]); # End of filterPackages
 
     # Font packages
     fonts.packages = with pkgs; [
@@ -351,10 +354,10 @@ in {
     fonts.fontconfig = {
       enable = true;
       defaultFonts = {
-        serif = ["Noto Serif" "Liberation Serif"];
-        sansSerif = ["Noto Sans" "Liberation Sans"];
-        monospace = ["JetBrainsMono Nerd Font" "Noto Sans Mono"];
-        emoji = ["Noto Color Emoji"];
+        serif = [ "Noto Serif" "Liberation Serif" ];
+        sansSerif = [ "Noto Sans" "Liberation Sans" ];
+        monospace = [ "JetBrainsMono Nerd Font" "Noto Sans Mono" ];
+        emoji = [ "Noto Color Emoji" ];
       };
     };
   };

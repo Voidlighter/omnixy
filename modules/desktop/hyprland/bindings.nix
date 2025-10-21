@@ -8,8 +8,7 @@ with lib;
 let
   cfg = config.omnixy.desktop;
   omnixy = import ../../helpers.nix { inherit config pkgs lib; };
-in
-{
+in {
   config = mkIf (cfg.enable or true) {
     # Create keybindings configuration
     environment.etc."omnixy/hyprland/bindings.conf".text = ''

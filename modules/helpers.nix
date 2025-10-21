@@ -1,13 +1,8 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 # OmniXY Shared Helper Functions
 # Import this in other modules to access common patterns
-with lib; let
-  cfg = config.omnixy;
+with lib;
+let cfg = config.omnixy;
 in {
   # Check if a feature is enabled, with fallback support
   isEnabled = feature: cfg.features.${feature} or false;
@@ -19,28 +14,26 @@ in {
 
   # Common color helper that works with both nix-colors and fallbacks
   getColor = colorName: fallback:
-    if cfg.colorScheme != null && cfg.colorScheme ? colors && cfg.colorScheme.colors ? ${colorName}
-    then "#${cfg.colorScheme.colors.${colorName}}"
-    else fallback;
+    if cfg.colorScheme != null && cfg.colorScheme ? colors
+    && cfg.colorScheme.colors ? ${colorName} then
+      "#${cfg.colorScheme.colors.${colorName}}"
+    else
+      fallback;
 
   # Feature-based conditional inclusion
-  withFeature = feature: content: mkIf (cfg.features.${feature} or false) content;
-  withoutFeature = feature: content: mkIf (!(cfg.features.${feature} or false)) content;
+  withFeature = feature: content:
+    mkIf (cfg.features.${feature} or false) content;
+  withoutFeature = feature: content:
+    mkIf (!(cfg.features.${feature} or false)) content;
 
   # User-specific home-manager configuration
-  forUser = userConfig: {
-    home-manager.users.${cfg.user} = userConfig;
-  };
+  forUser = userConfig: { home-manager.users.${cfg.user} = userConfig; };
 
   # Package filtering with exclusion support
   filterPackages = packages:
-    builtins.filter (
-      pkg: let
-        name = pkg.name or pkg.pname or "unknown";
-      in
-        !(builtins.elem name (cfg.packages.exclude or []))
-    )
-    packages;
+    builtins.filter (pkg:
+      let name = pkg.name or pkg.pname or "unknown";
+      in !(builtins.elem name (cfg.packages.exclude or [ ]))) packages;
 
   # Create a standardized script with OmniXY branding
   makeScript = name: description: script:
@@ -87,13 +80,14 @@ in {
 
   # Standard application categories for consistent organization
   categories = {
-    system = ["file managers" "terminals" "system monitors"];
-    development = ["editors" "version control" "compilers" "debuggers"];
-    multimedia = ["media players" "image viewers" "audio tools" "video editors"];
-    productivity = ["office suites" "note taking" "calendars" "email"];
-    communication = ["messaging" "video calls" "social media"];
-    gaming = ["game launchers" "emulators" "performance tools"];
-    utilities = ["calculators" "converters" "system tools"];
+    system = [ "file managers" "terminals" "system monitors" ];
+    development = [ "editors" "version control" "compilers" "debuggers" ];
+    multimedia =
+      [ "media players" "image viewers" "audio tools" "video editors" ];
+    productivity = [ "office suites" "note taking" "calendars" "email" ];
+    communication = [ "messaging" "video calls" "social media" ];
+    gaming = [ "game launchers" "emulators" "performance tools" ];
+    utilities = [ "calculators" "converters" "system tools" ];
   };
 
   # Hyprland configuration helper
@@ -126,32 +120,29 @@ in {
     # Create a basic systemd service with OmniXY defaults
     make = name: serviceConfig: {
       description = serviceConfig.description or "OmniXY ${name} service";
-      wantedBy = serviceConfig.wantedBy or ["multi-user.target"];
-      after = serviceConfig.after or ["network.target"];
-      serviceConfig =
-        {
-          Type = serviceConfig.type or "simple";
-          User = serviceConfig.user or cfg.user;
-          Group = serviceConfig.group or "users";
-          Restart = serviceConfig.restart or "on-failure";
-          RestartSec = serviceConfig.restartSec or "5";
-        }
-        // (serviceConfig.serviceConfig or {});
+      wantedBy = serviceConfig.wantedBy or [ "multi-user.target" ];
+      after = serviceConfig.after or [ "network.target" ];
+      serviceConfig = {
+        Type = serviceConfig.type or "simple";
+        User = serviceConfig.user or cfg.user;
+        Group = serviceConfig.group or "users";
+        Restart = serviceConfig.restart or "on-failure";
+        RestartSec = serviceConfig.restartSec or "5";
+      } // (serviceConfig.serviceConfig or { });
     };
 
     # Create a user service
     user = name: serviceConfig: {
       home-manager.users.${cfg.user}.systemd.user.services.${name} = {
-        description = serviceConfig.description or "OmniXY ${name} user service";
-        wantedBy = ["default.target"];
-        after = ["graphical-session.target"];
-        serviceConfig =
-          {
-            Type = serviceConfig.type or "simple";
-            Restart = serviceConfig.restart or "on-failure";
-            RestartSec = serviceConfig.restartSec or "5";
-          }
-          // (serviceConfig.serviceConfig or {});
+        description =
+          serviceConfig.description or "OmniXY ${name} user service";
+        wantedBy = [ "default.target" ];
+        after = [ "graphical-session.target" ];
+        serviceConfig = {
+          Type = serviceConfig.type or "simple";
+          Restart = serviceConfig.restart or "on-failure";
+          RestartSec = serviceConfig.restartSec or "5";
+        } // (serviceConfig.serviceConfig or { });
       };
     };
   };

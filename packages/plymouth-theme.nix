@@ -1,10 +1,4 @@
-{
-  lib,
-  pkgs,
-  stdenv,
-  writeTextFile,
-  ...
-}:
+{ lib, pkgs, stdenv, writeTextFile, ... }:
 # OmniXY Plymouth Theme Package
 # Creates theme-aware Plymouth boot screens
 let
@@ -79,7 +73,7 @@ let
   };
 
   # Base assets (copied from omarchy)
-  assets = pkgs.runCommand "omnixy-plymouth-assets" {} ''
+  assets = pkgs.runCommand "omnixy-plymouth-assets" { } ''
         mkdir -p $out
 
         # Create base logo (OmniXY branding)
@@ -273,45 +267,47 @@ let
         ScriptFile=/run/current-system/sw/share/plymouth/themes/omnixy-${themeName}/omnixy-${themeName}.script
       '';
     };
-in
   # Create derivation for all Plymouth themes
-  stdenv.mkDerivation rec {
-    pname = "omnixy-plymouth-themes";
-    version = "1.0";
+in stdenv.mkDerivation rec {
+  pname = "omnixy-plymouth-themes";
+  version = "1.0";
 
-    src = assets;
+  src = assets;
 
-    buildInputs = with pkgs; [coreutils];
+  buildInputs = with pkgs; [ coreutils ];
 
-    installPhase = ''
-      mkdir -p $out/share/plymouth/themes
+  installPhase = ''
+    mkdir -p $out/share/plymouth/themes
 
-      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (themeName: colors: ''
-          # Create theme directory
-          theme_dir="$out/share/plymouth/themes/omnixy-${themeName}"
-          mkdir -p "$theme_dir"
+    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (themeName: colors: ''
+      # Create theme directory
+      theme_dir="$out/share/plymouth/themes/omnixy-${themeName}"
+      mkdir -p "$theme_dir"
 
-          # Copy assets
-          cp ${src}/* "$theme_dir/"
+      # Copy assets
+      cp ${src}/* "$theme_dir/"
 
-          # Install theme files
-          cp ${createPlymouthScript themeName colors} "$theme_dir/omnixy-${themeName}.script"
-          cp ${createPlymouthTheme themeName colors} "$theme_dir/omnixy-${themeName}.plymouth"
+      # Install theme files
+      cp ${
+        createPlymouthScript themeName colors
+      } "$theme_dir/omnixy-${themeName}.script"
+      cp ${
+        createPlymouthTheme themeName colors
+      } "$theme_dir/omnixy-${themeName}.plymouth"
 
-          # Make script executable
-          chmod +x "$theme_dir/omnixy-${themeName}.script"
-        '')
-        themeColors)}
+      # Make script executable
+      chmod +x "$theme_dir/omnixy-${themeName}.script"
+    '') themeColors)}
 
-      # Create a default symlink to tokyo-night
-      ln -sf omnixy-tokyo-night $out/share/plymouth/themes/omnixy-default
-    '';
+    # Create a default symlink to tokyo-night
+    ln -sf omnixy-tokyo-night $out/share/plymouth/themes/omnixy-default
+  '';
 
-    meta = with lib; {
-      description = "OmniXY Plymouth boot splash themes";
-      homepage = "https://github.com/TheArctesian/omnixy";
-      license = licenses.mit;
-      platforms = platforms.linux;
-      maintainers = [];
-    };
-  }
+  meta = with lib; {
+    description = "OmniXY Plymouth boot splash themes";
+    homepage = "https://github.com/TheArctesian/omnixy";
+    license = licenses.mit;
+    platforms = platforms.linux;
+    maintainers = [ ];
+  };
+}

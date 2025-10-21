@@ -8,8 +8,7 @@ with lib;
 let
   cfg = config.omnixy.desktop;
   omnixy = import ../../helpers.nix { inherit config pkgs lib; };
-in
-{
+in {
   config = mkIf (cfg.enable or true) {
     # Create autostart configuration
     environment.etc."omnixy/hyprland/autostart.conf".text = ''
@@ -24,7 +23,8 @@ in
       exec-once = blueman-applet
 
       # Wallpaper setup
-      ${optionalString (cfg.wallpaper != null) ''exec = swww img ${toString cfg.wallpaper} --transition-type wipe''}
+      ${optionalString (cfg.wallpaper != null)
+      "exec = swww img ${toString cfg.wallpaper} --transition-type wipe"}
 
       # Clipboard management
       exec-once = wl-paste --type text --watch cliphist store
@@ -56,7 +56,8 @@ in
       ''}
 
       # System monitoring (optional)
-      ${optionalString (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") ''
+      ${optionalString
+      (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") ''
         exec-once = ${pkgs.btop}/bin/btop --utf-force
       ''}
 

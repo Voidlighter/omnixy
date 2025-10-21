@@ -1,11 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib; {
-  options.hardware.bluetooth.enhanced.enable = mkEnableOption "Enhanced Bluetooth support";
+  options.hardware.bluetooth.enhanced.enable =
+    mkEnableOption "Enhanced Bluetooth support";
 
   config = mkIf config.hardware.bluetooth.enhanced.enable {
     # Enable Bluetooth
@@ -34,14 +30,14 @@ with lib; {
     # Auto-connect trusted devices
     systemd.user.services.bluetooth-auto-connect = {
       description = "Auto-connect Bluetooth devices";
-      after = ["bluetooth.service"];
-      partOf = ["bluetooth.service"];
+      after = [ "bluetooth.service" ];
+      partOf = [ "bluetooth.service" ];
       serviceConfig = {
         Type = "forking";
         ExecStart = "${pkgs.bluez}/bin/bluetoothctl connect-all";
         RemainAfterExit = true;
       };
-      wantedBy = ["default.target"];
+      wantedBy = [ "default.target" ];
     };
   };
 }

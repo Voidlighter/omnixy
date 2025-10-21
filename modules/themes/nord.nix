@@ -1,14 +1,10 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 # Nord theme for OmniXY
 # An arctic, north-bluish color palette
-with lib; let
+with lib;
+let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix {inherit config pkgs lib;};
+  omnixy = import ../helpers.nix { inherit config pkgs lib; };
 
   # Nord color palette
   colors = {
@@ -109,13 +105,9 @@ in {
           package = pkgs.papirus-icon-theme;
         };
 
-        gtk3.extraConfig = {
-          gtk-application-prefer-dark-theme = 1;
-        };
+        gtk3.extraConfig = { gtk-application-prefer-dark-theme = 1; };
 
-        gtk4.extraConfig = {
-          gtk-application-prefer-dark-theme = 1;
-        };
+        gtk4.extraConfig = { gtk-application-prefer-dark-theme = 1; };
       };
 
       # Qt theming
@@ -126,175 +118,180 @@ in {
       };
 
       # Kitty terminal theme
-      programs.kitty = mkIf (omnixy.isEnabled "coding" || omnixy.isEnabled "media") {
-        enable = true;
-        themeFile = "Nord";
-        settings = {
-          background = colors.bg;
-          foreground = colors.fg;
-          selection_background = colors.bg_light;
-          selection_foreground = colors.fg;
+      programs.kitty =
+        mkIf (omnixy.isEnabled "coding" || omnixy.isEnabled "media") {
+          enable = true;
+          themeFile = "Nord";
+          settings = {
+            background = colors.bg;
+            foreground = colors.fg;
+            selection_background = colors.bg_light;
+            selection_foreground = colors.fg;
 
-          # Cursor colors
-          cursor = colors.fg;
-          cursor_text_color = colors.bg;
+            # Cursor colors
+            cursor = colors.fg;
+            cursor_text_color = colors.bg;
 
-          # URL underline color when hovering
-          url_color = colors.accent;
+            # URL underline color when hovering
+            url_color = colors.accent;
 
-          # Tab colors
-          active_tab_background = colors.accent;
-          active_tab_foreground = colors.bg;
-          inactive_tab_background = colors.bg_light;
-          inactive_tab_foreground = colors.fg_dim;
+            # Tab colors
+            active_tab_background = colors.accent;
+            active_tab_foreground = colors.bg;
+            inactive_tab_background = colors.bg_light;
+            inactive_tab_foreground = colors.fg_dim;
 
-          # Window border colors
-          active_border_color = colors.accent;
-          inactive_border_color = colors.bg_lighter;
+            # Window border colors
+            active_border_color = colors.accent;
+            inactive_border_color = colors.bg_lighter;
+          };
         };
-      };
 
       # Alacritty terminal theme
-      programs.alacritty = mkIf (omnixy.isEnabled "coding" || omnixy.isEnabled "media") {
-        enable = true;
-        settings = {
-          colors = {
-            primary = {
-              background = colors.bg;
-              foreground = colors.fg;
-            };
-            cursor = {
-              text = colors.bg;
-              cursor = colors.fg;
-            };
-            normal = {
-              black = colors.bg_dark;
-              red = colors.red;
-              green = colors.green;
-              yellow = colors.yellow;
-              blue = colors.blue;
-              magenta = colors.purple;
-              cyan = colors.teal;
-              white = colors.fg_dim;
-            };
-            bright = {
-              black = colors.bg_lighter;
-              red = colors.red;
-              green = colors.green;
-              yellow = colors.yellow;
-              blue = colors.blue_light;
-              magenta = colors.purple;
-              cyan = colors.blue_bright;
-              white = colors.fg;
+      programs.alacritty =
+        mkIf (omnixy.isEnabled "coding" || omnixy.isEnabled "media") {
+          enable = true;
+          settings = {
+            colors = {
+              primary = {
+                background = colors.bg;
+                foreground = colors.fg;
+              };
+              cursor = {
+                text = colors.bg;
+                cursor = colors.fg;
+              };
+              normal = {
+                black = colors.bg_dark;
+                red = colors.red;
+                green = colors.green;
+                yellow = colors.yellow;
+                blue = colors.blue;
+                magenta = colors.purple;
+                cyan = colors.teal;
+                white = colors.fg_dim;
+              };
+              bright = {
+                black = colors.bg_lighter;
+                red = colors.red;
+                green = colors.green;
+                yellow = colors.yellow;
+                blue = colors.blue_light;
+                magenta = colors.purple;
+                cyan = colors.blue_bright;
+                white = colors.fg;
+              };
             };
           };
         };
-      };
 
       # Waybar theme
-      programs.waybar = mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
-        enable = true;
-        style = ''
-          * {
-            font-family: "JetBrainsMono Nerd Font";
-            font-size: 13px;
-            border: none;
-            border-radius: 0;
-            min-height: 0;
-          }
+      programs.waybar =
+        mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
+          enable = true;
+          style = ''
+            * {
+              font-family: "JetBrainsMono Nerd Font";
+              font-size: 13px;
+              border: none;
+              border-radius: 0;
+              min-height: 0;
+            }
 
-          window#waybar {
-            background: ${colors.bg};
-            color: ${colors.fg};
-            border-bottom: 2px solid ${colors.accent};
-          }
+            window#waybar {
+              background: ${colors.bg};
+              color: ${colors.fg};
+              border-bottom: 2px solid ${colors.accent};
+            }
 
-          #workspaces button {
-            padding: 0 8px;
-            background: transparent;
-            color: ${colors.fg_dim};
-            border-bottom: 2px solid transparent;
-          }
+            #workspaces button {
+              padding: 0 8px;
+              background: transparent;
+              color: ${colors.fg_dim};
+              border-bottom: 2px solid transparent;
+            }
 
-          #workspaces button.active {
-            color: ${colors.accent};
-            border-bottom-color: ${colors.accent};
-          }
+            #workspaces button.active {
+              color: ${colors.accent};
+              border-bottom-color: ${colors.accent};
+            }
 
-          #workspaces button:hover {
-            color: ${colors.fg};
-            background: ${colors.bg_light};
-          }
+            #workspaces button:hover {
+              color: ${colors.fg};
+              background: ${colors.bg_light};
+            }
 
-          #clock, #battery, #cpu, #memory, #network, #pulseaudio {
-            padding: 0 10px;
-            margin: 0 2px;
-            background: ${colors.bg_light};
-            color: ${colors.fg};
-          }
+            #clock, #battery, #cpu, #memory, #network, #pulseaudio {
+              padding: 0 10px;
+              margin: 0 2px;
+              background: ${colors.bg_light};
+              color: ${colors.fg};
+            }
 
-          #battery.critical {
-            color: ${colors.error};
-          }
+            #battery.critical {
+              color: ${colors.error};
+            }
 
-          #battery.warning {
-            color: ${colors.warning};
-          }
-        '';
-      };
+            #battery.warning {
+              color: ${colors.warning};
+            }
+          '';
+        };
 
       # Rofi theme
-      programs.rofi = mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
-        enable = true;
-        theme = {
-          "*" = {
-            background-color = mkLiteral colors.bg;
-            foreground-color = mkLiteral colors.fg;
-            border-color = mkLiteral colors.accent;
-            separatorcolor = mkLiteral colors.bg_light;
-            scrollbar-handle = mkLiteral colors.accent;
-          };
+      programs.rofi =
+        mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
+          enable = true;
+          theme = {
+            "*" = {
+              background-color = mkLiteral colors.bg;
+              foreground-color = mkLiteral colors.fg;
+              border-color = mkLiteral colors.accent;
+              separatorcolor = mkLiteral colors.bg_light;
+              scrollbar-handle = mkLiteral colors.accent;
+            };
 
-          "#window" = {
-            border = mkLiteral "2px";
-            border-radius = mkLiteral "8px";
-            padding = mkLiteral "20px";
-          };
+            "#window" = {
+              border = mkLiteral "2px";
+              border-radius = mkLiteral "8px";
+              padding = mkLiteral "20px";
+            };
 
-          "#element selected" = {
-            background-color = mkLiteral colors.accent;
-            text-color = mkLiteral colors.bg;
+            "#element selected" = {
+              background-color = mkLiteral colors.accent;
+              text-color = mkLiteral colors.bg;
+            };
           };
         };
-      };
 
       # Mako notification theme
-      services.mako = mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
-        enable = true;
-        settings = {
-          font = "JetBrainsMono Nerd Font 10";
-          background-color = colors.bg;
-          text-color = colors.fg;
-          border-color = colors.accent;
-          border-size = 2;
-          border-radius = 8;
-          padding = "10";
-          margin = "5";
-          default-timeout = 5000;
-          progress-color = colors.accent;
+      services.mako =
+        mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
+          enable = true;
+          settings = {
+            font = "JetBrainsMono Nerd Font 10";
+            background-color = colors.bg;
+            text-color = colors.fg;
+            border-color = colors.accent;
+            border-size = 2;
+            border-radius = 8;
+            padding = "10";
+            margin = "5";
+            default-timeout = 5000;
+            progress-color = colors.accent;
+          };
         };
-      };
 
       # VSCode theme
       programs.vscode = mkIf (omnixy.isEnabled "coding") {
         enable = true;
-        extensions = with pkgs.vscode-extensions; [
-          arcticicestudio.nord-visual-studio-code
-        ];
+        extensions = with pkgs.vscode-extensions;
+          [ arcticicestudio.nord-visual-studio-code ];
         userSettings = {
           "workbench.colorTheme" = "Nord";
           "workbench.preferredDarkColorTheme" = "Nord";
-          "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'Droid Sans Mono', 'monospace'";
+          "editor.fontFamily" =
+            "'JetBrainsMono Nerd Font', 'Droid Sans Mono', 'monospace'";
           "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
         };
       };
@@ -306,9 +303,7 @@ in {
           colorscheme nord
           set background=dark
         '';
-        plugins = with pkgs.vimPlugins; [
-          nord-nvim
-        ];
+        plugins = with pkgs.vimPlugins; [ nord-nvim ];
       };
 
       # Git diff and bat theme
@@ -321,8 +316,8 @@ in {
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = false;
-          selectedLineBgColor = [colors.bg_light];
-          selectedRangeBgColor = [colors.bg_light];
+          selectedLineBgColor = [ colors.bg_light ];
+          selectedRangeBgColor = [ colors.bg_light ];
         };
       };
 
@@ -335,15 +330,9 @@ in {
             success_symbol = "[➜](bold ${colors.success})";
             error_symbol = "[➜](bold ${colors.error})";
           };
-          directory = {
-            style = "bold ${colors.blue_light}";
-          };
-          git_branch = {
-            style = "bold ${colors.purple}";
-          };
-          git_status = {
-            style = "bold ${colors.warning}";
-          };
+          directory = { style = "bold ${colors.blue_light}"; };
+          git_branch = { style = "bold ${colors.purple}"; };
+          git_status = { style = "bold ${colors.warning}"; };
         };
       };
     })

@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib; {
   imports = [
     ./nvidia.nix
@@ -20,8 +15,10 @@ with lib; {
     enableRedistributableFirmware = true;
 
     # CPU microcode updates
-    cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu.intel.updateMicrocode =
+      lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu.amd.updateMicrocode =
+      lib.mkDefault config.hardware.enableRedistributableFirmware;
 
     # Graphics support
     graphics = {
@@ -52,11 +49,12 @@ with lib; {
     # Scanner support
     sane = {
       enable = true;
-      extraBackends = with pkgs; [
-        sane-airscan
-        # epkowa removed due to iscan build issues
-        # Use epsonscan2 or imagescan for Epson scanner support instead
-      ];
+      extraBackends = with pkgs;
+        [
+          sane-airscan
+          # epkowa removed due to iscan build issues
+          # Use epsonscan2 or imagescan for Epson scanner support instead
+        ];
     };
 
     # Firmware updater (moved to services section)
@@ -96,7 +94,8 @@ with lib; {
 
     # Automatic CPU frequency scaling
     auto-cpufreq = {
-      enable = false; # Disabled by default, conflicts with power-profiles-daemon
+      enable =
+        false; # Disabled by default, conflicts with power-profiles-daemon
       settings = {
         battery = {
           governor = "powersave";
@@ -167,7 +166,8 @@ with lib; {
   # Virtual console configuration
   console = {
     earlySetup = true;
-    font = lib.mkDefault "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz";
-    packages = [pkgs.terminus_font];
+    font =
+      lib.mkDefault "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz";
+    packages = [ pkgs.terminus_font ];
   };
 }

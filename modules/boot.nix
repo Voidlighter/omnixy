@@ -1,31 +1,28 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 # OmniXY Boot Configuration
 # Plymouth theming and seamless boot experience
-with lib; let
+with lib;
+let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+  omnixy = import ./helpers.nix { inherit config pkgs lib; };
 
   # Import our custom Plymouth theme package
   # plymouth-themes = (pkgs.callPackage ../packages/plymouth-theme.nix {}) or pkgs.plymouth;
-  plymouth-themes =
-    if builtins.pathExists ../packages/plymouth-theme.nix
-    then pkgs.callPackage ../packages/plymouth-theme.nix {}
-    else pkgs.plymouth;
+  plymouth-themes = if builtins.pathExists ../packages/plymouth-theme.nix then
+    pkgs.callPackage ../packages/plymouth-theme.nix { }
+  else
+    pkgs.plymouth;
 in {
   config = mkIf (cfg.enable or true) {
     # Plymouth boot splash configuration
     boot.plymouth = {
       enable = true;
       theme = "omnixy-${cfg.theme}";
-      themePackages = [plymouth-themes];
+      themePackages = [ plymouth-themes ];
 
       # Logo configuration
-      logo = "${plymouth-themes}/share/plymouth/themes/omnixy-${cfg.theme}/logo.png";
+      logo =
+        "${plymouth-themes}/share/plymouth/themes/omnixy-${cfg.theme}/logo.png";
     };
 
     # Boot optimization and theming
@@ -55,6 +52,15 @@ in {
 
       # Boot loader configuration
       loader = {
+        # grub = {
+        #   enable = true;
+        #   efiSupport = true;
+        #   useOSProber = true;
+        #   device = "nodev";
+        #   configurationLimit = 10;
+        # };
+        # efi.canTouchEfiVariables = true;
+
         # Timeout for boot menu
         timeout = 3;
 
@@ -79,9 +85,9 @@ in {
     # Systemd service for seamless login transition
     systemd.services.omnixy-boot-transition = {
       description = "OmniXY Boot Transition Service";
-      after = ["plymouth-start.service" "display-manager.service"];
-      before = ["plymouth-quit.service"];
-      wantedBy = ["multi-user.target"];
+      after = [ "plymouth-start.service" "display-manager.service" ];
+      before = [ "plymouth-quit.service" ];
+      wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {
         Type = "oneshot";
@@ -177,38 +183,39 @@ in {
       '')
 
       # Boot diagnostics
-      (omnixy.makeScript "omnixy-boot-info" "Show boot information and diagnostics" ''
-        echo "🚀 OmniXY Boot Information"
-        echo "═══════════════════════════"
-        echo
-
-        echo "🎨 Plymouth Configuration:"
-        echo "  Current Theme: ${cfg.theme}"
-        echo "  Theme Package: ${plymouth-themes}"
-        echo "  Plymouth Status: $(systemctl is-active plymouth-start.service 2>/dev/null || echo 'inactive')"
-        echo
-
-        echo "⚙️  Boot Configuration:"
-        echo "  Boot Loader: $(bootctl status 2>/dev/null | grep 'systemd-boot' || echo 'systemd-boot')"
-        echo "  Kernel: $(uname -r)"
-        echo "  Boot Time: $(systemd-analyze | head -1)"
-        echo
-
-        echo "📊 Boot Performance:"
-        systemd-analyze blame | head -10
-        echo
-
-        echo "🔧 Boot Services:"
-        echo "  Display Manager: $(systemctl is-active display-manager 2>/dev/null || echo 'inactive')"
-        echo "  Plymouth: $(systemctl is-active plymouth-*.service 2>/dev/null || echo 'inactive')"
-        echo "  OmniXY Transition: $(systemctl is-active omnixy-boot-transition 2>/dev/null || echo 'inactive')"
-
-        if [ -f "/tmp/plymouth-debug.log" ]; then
+      (omnixy.makeScript "omnixy-boot-info"
+        "Show boot information and diagnostics" ''
+          echo "🚀 OmniXY Boot Information"
+          echo "═══════════════════════════"
           echo
-          echo "🐛 Plymouth Debug Log (last 10 lines):"
-          tail -10 /tmp/plymouth-debug.log
-        fi
-      '')
+
+          echo "🎨 Plymouth Configuration:"
+          echo "  Current Theme: ${cfg.theme}"
+          echo "  Theme Package: ${plymouth-themes}"
+          echo "  Plymouth Status: $(systemctl is-active plymouth-start.service 2>/dev/null || echo 'inactive')"
+          echo
+
+          echo "⚙️  Boot Configuration:"
+          echo "  Boot Loader: $(bootctl status 2>/dev/null | grep 'systemd-boot' || echo 'systemd-boot')"
+          echo "  Kernel: $(uname -r)"
+          echo "  Boot Time: $(systemd-analyze | head -1)"
+          echo
+
+          echo "📊 Boot Performance:"
+          systemd-analyze blame | head -10
+          echo
+
+          echo "🔧 Boot Services:"
+          echo "  Display Manager: $(systemctl is-active display-manager 2>/dev/null || echo 'inactive')"
+          echo "  Plymouth: $(systemctl is-active plymouth-*.service 2>/dev/null || echo 'inactive')"
+          echo "  OmniXY Transition: $(systemctl is-active omnixy-boot-transition 2>/dev/null || echo 'inactive')"
+
+          if [ -f "/tmp/plymouth-debug.log" ]; then
+            echo
+            echo "🐛 Plymouth Debug Log (last 10 lines):"
+            tail -10 /tmp/plymouth-debug.log
+          fi
+        '')
     ];
 
     # Ensure Plymouth themes are properly installed
@@ -247,52 +254,45 @@ in {
     # Console and TTY configuration
     console = {
       earlySetup = true;
-      colors =
-        [
-          # Custom console color palette matching current theme
-          # This will be used before Plymouth starts
-        ]
-        ++ (
-          if cfg.theme == "tokyo-night"
-          then [
-            "1a1b26"
-            "f7768e"
-            "9ece6a"
-            "e0af68"
-            "7aa2f7"
-            "bb9af7"
-            "7dcfff"
-            "c0caf5"
-            "414868"
-            "f7768e"
-            "9ece6a"
-            "e0af68"
-            "7aa2f7"
-            "bb9af7"
-            "7dcfff"
-            "a9b1d6"
-          ]
-          else if cfg.theme == "gruvbox"
-          then [
-            "282828"
-            "cc241d"
-            "98971a"
-            "d79921"
-            "458588"
-            "b16286"
-            "689d6a"
-            "a89984"
-            "928374"
-            "fb4934"
-            "b8bb26"
-            "fabd2f"
-            "83a598"
-            "d3869b"
-            "8ec07c"
-            "ebdbb2"
-          ]
-          else []
-        );
+      colors = [
+        # Custom console color palette matching current theme
+        # This will be used before Plymouth starts
+      ] ++ (if cfg.theme == "tokyo-night" then [
+        "1a1b26"
+        "f7768e"
+        "9ece6a"
+        "e0af68"
+        "7aa2f7"
+        "bb9af7"
+        "7dcfff"
+        "c0caf5"
+        "414868"
+        "f7768e"
+        "9ece6a"
+        "e0af68"
+        "7aa2f7"
+        "bb9af7"
+        "7dcfff"
+        "a9b1d6"
+      ] else if cfg.theme == "gruvbox" then [
+        "282828"
+        "cc241d"
+        "98971a"
+        "d79921"
+        "458588"
+        "b16286"
+        "689d6a"
+        "a89984"
+        "928374"
+        "fb4934"
+        "b8bb26"
+        "fabd2f"
+        "83a598"
+        "d3869b"
+        "8ec07c"
+        "ebdbb2"
+      ] else
+        [ ]);
     };
   };
 }

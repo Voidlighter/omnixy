@@ -1,11 +1,6 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.omnixy;
+{ config, pkgs, lib, ... }:
+with lib;
+let cfg = config.omnixy;
 in {
   # XDG Desktop Portals (required for Flatpak)
   xdg.portal = {
@@ -20,7 +15,8 @@ in {
   # Tuigreet display manager (following omarchy-nix pattern)
   services.greetd = {
     enable = true;
-    settings.default_session.command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+    settings.default_session.command =
+      "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
   };
 
   # System services configuration
@@ -84,13 +80,8 @@ in {
     resolved = {
       enable = true;
       dnssec = "true";
-      domains = ["~."];
-      fallbackDns = [
-        "1.1.1.1"
-        "8.8.8.8"
-        "1.0.0.1"
-        "8.8.4.4"
-      ];
+      domains = [ "~." ];
+      fallbackDns = [ "1.1.1.1" "8.8.8.8" "1.0.0.1" "8.8.4.4" ];
     };
 
     # Bluetooth
@@ -202,7 +193,7 @@ in {
     # System daemons
     dbus = {
       enable = true;
-      packages = with pkgs; [dconf];
+      packages = with pkgs; [ dconf ];
     };
 
     # Avahi for network discovery
@@ -260,7 +251,7 @@ in {
     # Automatic cleanup
     timers.clear-tmp = {
       description = "Clear /tmp weekly";
-      wantedBy = ["timers.target"];
+      wantedBy = [ "timers.target" ];
       timerConfig = {
         OnCalendar = "weekly";
         Persistent = true;
@@ -278,8 +269,8 @@ in {
     # Custom Omarchy services
     services.omnixy-init = {
       description = "Omarchy initialization service";
-      wantedBy = ["multi-user.target"];
-      after = ["network.target"];
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
@@ -320,10 +311,7 @@ in {
     # AppArmor
     apparmor = {
       enable = true;
-      packages = with pkgs; [
-        apparmor-utils
-        apparmor-profiles
-      ];
+      packages = with pkgs; [ apparmor-utils apparmor-profiles ];
     };
   };
 }

@@ -1,65 +1,63 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 # Essential system utility scripts for OmniXY
 # Convenient scripts for system management and productivity
-with lib; let
+with lib;
+let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+  omnixy = import ./helpers.nix { inherit config pkgs lib; };
 in {
   config = mkIf (cfg.enable or true) {
     # System utility scripts
     environment.systemPackages = [
       # System information and monitoring
-      (omnixy.makeScript "omnixy-sysinfo" "Show comprehensive system information" ''
-        echo "╭─────────────────── OmniXY System Info ───────────────────╮"
-        echo "│"
-        echo "│  💻 System: $(hostname) ($(uname -m))"
-        echo "│  🐧 OS: NixOS $(nixos-version)"
-        echo "│  🎨 Theme: ${cfg.theme}"
-        echo "│  👤 User: ${cfg.user}"
-        echo "│  🏠 Preset: ${cfg.preset or "custom"}"
-        echo "│"
-        echo "│  🔧 Uptime: $(uptime -p)"
-        echo "│  💾 Memory: $(free -h | awk 'NR==2{printf "%.1f/%.1fGB (%.0f%%)", $3/1024/1024, $2/1024/1024, $3*100/$2}')"
-        echo "│  💽 Disk: $(df -h / | awk 'NR==2{printf "%s/%s (%s)", $3, $2, $5}')"
-        echo "│  🌡️  Load: $(uptime | sed 's/.*load average: //')"
-        echo "│"
-        echo "│  📦 Packages: $(nix-env -qa --installed | wc -l) installed"
-        echo "│  🗂️  Generations: $(sudo nix-env -p /nix/var/nix/profiles/system --list-generations | wc -l) total"
-        echo "│"
-        echo "╰───────────────────────────────────────────────────────────╯"
-      '')
+      (omnixy.makeScript "omnixy-sysinfo"
+        "Show comprehensive system information" ''
+          echo "╭─────────────────── OmniXY System Info ───────────────────╮"
+          echo "│"
+          echo "│  💻 System: $(hostname) ($(uname -m))"
+          echo "│  🐧 OS: NixOS $(nixos-version)"
+          echo "│  🎨 Theme: ${cfg.theme}"
+          echo "│  👤 User: ${cfg.user}"
+          echo "│  🏠 Preset: ${cfg.preset or "custom"}"
+          echo "│"
+          echo "│  🔧 Uptime: $(uptime -p)"
+          echo "│  💾 Memory: $(free -h | awk 'NR==2{printf "%.1f/%.1fGB (%.0f%%)", $3/1024/1024, $2/1024/1024, $3*100/$2}')"
+          echo "│  💽 Disk: $(df -h / | awk 'NR==2{printf "%s/%s (%s)", $3, $2, $5}')"
+          echo "│  🌡️  Load: $(uptime | sed 's/.*load average: //')"
+          echo "│"
+          echo "│  📦 Packages: $(nix-env -qa --installed | wc -l) installed"
+          echo "│  🗂️  Generations: $(sudo nix-env -p /nix/var/nix/profiles/system --list-generations | wc -l) total"
+          echo "│"
+          echo "╰───────────────────────────────────────────────────────────╯"
+        '')
 
       # Quick system maintenance
-      (omnixy.makeScript "omnixy-clean" "Clean system (garbage collect, optimize)" ''
-        echo "🧹 Cleaning OmniXY system..."
+      (omnixy.makeScript "omnixy-clean"
+        "Clean system (garbage collect, optimize)" ''
+          echo "🧹 Cleaning OmniXY system..."
 
-        echo "  ├─ Collecting garbage..."
-        sudo nix-collect-garbage -d
+          echo "  ├─ Collecting garbage..."
+          sudo nix-collect-garbage -d
 
-        echo "  ├─ Optimizing store..."
-        sudo nix-store --optimize
+          echo "  ├─ Optimizing store..."
+          sudo nix-store --optimize
 
-        echo "  ├─ Clearing user caches..."
-        rm -rf ~/.cache/thumbnails/*
-        rm -rf ~/.cache/mesa_shader_cache/*
-        rm -rf ~/.cache/fontconfig/*
+          echo "  ├─ Clearing user caches..."
+          rm -rf ~/.cache/thumbnails/*
+          rm -rf ~/.cache/mesa_shader_cache/*
+          rm -rf ~/.cache/fontconfig/*
 
-        echo "  ├─ Clearing logs..."
-        sudo journalctl --vacuum-time=7d
+          echo "  ├─ Clearing logs..."
+          sudo journalctl --vacuum-time=7d
 
-        echo "  └─ Cleaning complete!"
+          echo "  └─ Cleaning complete!"
 
-        # Show space saved
-        echo
-        echo "💾 Disk usage:"
-        df -h / | awk 'NR==2{printf "   Root: %s/%s (%s used)\n", $3, $2, $5}'
-        du -sh /nix/store | awk '{printf "   Nix Store: %s\n", $1}'
-      '')
+          # Show space saved
+          echo
+          echo "💾 Disk usage:"
+          df -h / | awk 'NR==2{printf "   Root: %s/%s (%s used)\n", $3, $2, $5}'
+          du -sh /nix/store | awk '{printf "   Nix Store: %s\n", $1}'
+        '')
 
       # Update system and flake
       (omnixy.makeScript "omnixy-update" "Update system and flake inputs" ''
@@ -107,23 +105,24 @@ in {
       '')
 
       # Test build without switching
-      (omnixy.makeScript "omnixy-test" "Test build configuration without switching" ''
-        echo "🧪 Testing OmniXY configuration..."
+      (omnixy.makeScript "omnixy-test"
+        "Test build configuration without switching" ''
+          echo "🧪 Testing OmniXY configuration..."
 
-        cd /etc/nixos || { echo "❌ Not in /etc/nixos directory"; exit 1; }
+          cd /etc/nixos || { echo "❌ Not in /etc/nixos directory"; exit 1; }
 
-        # Build without switching
-        sudo nixos-rebuild build --flake .#veridia
+          # Build without switching
+          sudo nixos-rebuild build --flake .#veridia
 
-        if [ $? -eq 0 ]; then
-          echo "✅ Build test successful!"
-          echo "   Configuration is valid and ready for deployment"
-        else
-          echo "❌ Build test failed!"
-          echo "   Fix configuration errors before rebuilding"
-          exit 1
-        fi
-      '')
+          if [ $? -eq 0 ]; then
+            echo "✅ Build test successful!"
+            echo "   Configuration is valid and ready for deployment"
+          else
+            echo "❌ Build test failed!"
+            echo "   Fix configuration errors before rebuilding"
+            exit 1
+          fi
+        '')
 
       # Search for packages
       (omnixy.makeScript "omnixy-search" "Search for NixOS packages" ''
@@ -204,41 +203,42 @@ in {
       '')
 
       # Hardware information
-      (omnixy.makeScript "omnixy-hardware" "Show detailed hardware information" ''
-        echo "🖥️  OmniXY Hardware Information"
-        echo "═══════════════════════════════════"
-        echo
+      (omnixy.makeScript "omnixy-hardware"
+        "Show detailed hardware information" ''
+          echo "🖥️  OmniXY Hardware Information"
+          echo "═══════════════════════════════════"
+          echo
 
-        echo "💻 System:"
-        echo "  Model: $(cat /sys/class/dmi/id/product_name 2>/dev/null || echo 'Unknown')"
-        echo "  Manufacturer: $(cat /sys/class/dmi/id/sys_vendor 2>/dev/null || echo 'Unknown')"
-        echo "  BIOS: $(cat /sys/class/dmi/id/bios_version 2>/dev/null || echo 'Unknown')"
-        echo
+          echo "💻 System:"
+          echo "  Model: $(cat /sys/class/dmi/id/product_name 2>/dev/null || echo 'Unknown')"
+          echo "  Manufacturer: $(cat /sys/class/dmi/id/sys_vendor 2>/dev/null || echo 'Unknown')"
+          echo "  BIOS: $(cat /sys/class/dmi/id/bios_version 2>/dev/null || echo 'Unknown')"
+          echo
 
-        echo "🧠 CPU:"
-        lscpu | grep -E "Model name|Architecture|CPU\(s\)|Thread|Core|MHz"
-        echo
+          echo "🧠 CPU:"
+          lscpu | grep -E "Model name|Architecture|CPU\(s\)|Thread|Core|MHz"
+          echo
 
-        echo "💾 Memory:"
-        free -h
-        echo
+          echo "💾 Memory:"
+          free -h
+          echo
 
-        echo "💽 Storage:"
-        lsblk -f
-        echo
+          echo "💽 Storage:"
+          lsblk -f
+          echo
 
-        echo "📺 Graphics:"
-        lspci | grep -i vga
-        lspci | grep -i 3d
-        echo
+          echo "📺 Graphics:"
+          lspci | grep -i vga
+          lspci | grep -i 3d
+          echo
 
-        echo "🔊 Audio:"
-        lspci | grep -i audio
-        echo
+          echo "🔊 Audio:"
+          lspci | grep -i audio
+          echo
 
-        echo "🌐 Network:"
-        ip addr show | grep -E "inet |link/"
-      '')
+          echo "🌐 Network:"
+          ip addr show | grep -E "inet |link/"
+        '')
 
       # Service management
       (omnixy.makeScript "omnixy-services" "Manage OmniXY services" ''
@@ -294,39 +294,40 @@ in {
       '')
 
       # Quick configuration editing
-      (omnixy.makeScript "omnixy-config" "Quick access to configuration files" ''
-        case "$1" in
-          "main"|"")
-            echo "📝 Opening main configuration..."
-            ''${EDITOR:-nano} /etc/nixos/configuration.nix
-            ;;
-          "hyprland")
-            echo "📝 Opening Hyprland configuration..."
-            ''${EDITOR:-nano} /etc/nixos/modules/desktop/hyprland.nix
-            ;;
-          "theme")
-            echo "📝 Opening theme configuration..."
-            ''${EDITOR:-nano} /etc/nixos/modules/themes/${cfg.theme}.nix
-            ;;
-          "packages")
-            echo "📝 Opening package configuration..."
-            ''${EDITOR:-nano} /etc/nixos/modules/packages.nix
-            ;;
-          *)
-            echo "📝 OmniXY Configuration Files"
-            echo
-            echo "Usage: omnixy-config <target>"
-            echo
-            echo "Targets:"
-            echo "  main       - Main configuration.nix file"
-            echo "  hyprland   - Hyprland window manager config"
-            echo "  theme      - Current theme configuration"
-            echo "  packages   - Package configuration"
-            echo
-            echo "Files will open in: ''${EDITOR:-nano}"
-            ;;
-        esac
-      '')
+      (omnixy.makeScript "omnixy-config"
+        "Quick access to configuration files" ''
+          case "$1" in
+            "main"|"")
+              echo "📝 Opening main configuration..."
+              ''${EDITOR:-nano} /etc/nixos/configuration.nix
+              ;;
+            "hyprland")
+              echo "📝 Opening Hyprland configuration..."
+              ''${EDITOR:-nano} /etc/nixos/modules/desktop/hyprland.nix
+              ;;
+            "theme")
+              echo "📝 Opening theme configuration..."
+              ''${EDITOR:-nano} /etc/nixos/modules/themes/${cfg.theme}.nix
+              ;;
+            "packages")
+              echo "📝 Opening package configuration..."
+              ''${EDITOR:-nano} /etc/nixos/modules/packages.nix
+              ;;
+            *)
+              echo "📝 OmniXY Configuration Files"
+              echo
+              echo "Usage: omnixy-config <target>"
+              echo
+              echo "Targets:"
+              echo "  main       - Main configuration.nix file"
+              echo "  hyprland   - Hyprland window manager config"
+              echo "  theme      - Current theme configuration"
+              echo "  packages   - Package configuration"
+              echo
+              echo "Files will open in: ''${EDITOR:-nano}"
+              ;;
+          esac
+        '')
 
       # Backup and restore
       (omnixy.makeScript "omnixy-backup" "Backup OmniXY configuration" ''

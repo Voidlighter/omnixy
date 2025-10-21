@@ -1,12 +1,8 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib; let
+{ config, pkgs, lib, ... }:
+with lib;
+let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+  omnixy = import ./helpers.nix { inherit config pkgs lib; };
 in {
   config = omnixy.withFeature "coding" {
     # Development tools
@@ -389,14 +385,14 @@ in {
       enable = true;
       enableOnBoot = true;
       daemon.settings = {
-        features = {buildkit = true;};
-        registry-mirrors = ["https://mirror.gcr.io"];
+        features = { buildkit = true; };
+        registry-mirrors = [ "https://mirror.gcr.io" ];
       };
 
       autoPrune = {
         enable = true;
         dates = "weekly";
-        flags = ["--all"];
+        flags = [ "--all" ];
       };
     };
 

@@ -1,10 +1,5 @@
-{
-  config,
-  pkgs,
-  lib,
-  inputs,
-  ...
-}: let
+{ config, pkgs, lib, inputs, ... }:
+let
   cfg = config.omnixy;
 
   # Use nix-colors if available and configured, otherwise fallback to manual colors
@@ -28,14 +23,16 @@
 
   # Helper function to get color from scheme or fallback
   getColor = name: fallback:
-    if useNixColors && colorScheme ? colors && colorScheme.colors ? ${name}
-    then "#${colorScheme.colors.${name}}"
-    else fallback;
+    if useNixColors && colorScheme ? colors && colorScheme.colors ? ${name} then
+      "#${colorScheme.colors.${name}}"
+    else
+      fallback;
 in {
   # Tokyo Night theme configuration
   config = {
     # Set theme wallpaper
-    omnixy.desktop.wallpaper = ./wallpapers/tokyo-night/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png;
+    omnixy.desktop.wallpaper =
+      ./wallpapers/tokyo-night/1-scenery-pink-lakeside-sunset-lake-landscape-scenic-panorama-7680x3215-144.png;
 
     # Hyprland theme colors
     environment.etc."omnixy/hyprland/theme.conf".text = ''
@@ -150,9 +147,7 @@ in {
       programs.vscode.profiles.default.userSettings = {
         "workbench.colorTheme" = "Tokyo Night";
         "editor.tokenColorCustomizations" = {
-          "[Tokyo Night]" = {
-            "textMateRules" = [];
-          };
+          "[Tokyo Night]" = { "textMateRules" = [ ]; };
         };
         "workbench.colorCustomizations" = {
           "[Tokyo Night]" = {
@@ -170,24 +165,21 @@ in {
       gtk = {
         theme = {
           name = "Tokyo-Night";
-          package =
-            pkgs.tokyo-night-gtk or (pkgs.adw-gtk3.overrideAttrs (oldAttrs: {
+          package = pkgs.tokyo-night-gtk or (pkgs.adw-gtk3.overrideAttrs
+            (oldAttrs: {
               pname = "tokyo-night-gtk";
-              postInstall =
-                (oldAttrs.postInstall or "")
-                + ''
-                  # Customize colors for Tokyo Night
-                  sed -i 's/#1e1e2e/#1a1b26/g' $out/share/themes/*/gtk-3.0/gtk.css
-                  sed -i 's/#cdd6f4/#c0caf5/g' $out/share/themes/*/gtk-3.0/gtk.css
-                '';
+              postInstall = (oldAttrs.postInstall or "") + ''
+                # Customize colors for Tokyo Night
+                sed -i 's/#1e1e2e/#1a1b26/g' $out/share/themes/*/gtk-3.0/gtk.css
+                sed -i 's/#cdd6f4/#c0caf5/g' $out/share/themes/*/gtk-3.0/gtk.css
+              '';
             }));
         };
       };
 
       # Rofi/Wofi theme
       programs.rofi = {
-        theme = let
-          inherit (config.lib.formats.rasi) mkLiteral;
+        theme = let inherit (config.lib.formats.rasi) mkLiteral;
         in {
           "*" = {
             background = mkLiteral "#1a1b26";
@@ -231,21 +223,17 @@ in {
           symbol = " ";
         };
 
-        git_status = {
-          style = "red";
-        };
+        git_status = { style = "red"; };
       };
 
       # Neovim theme
-      programs.neovim.plugins = with pkgs.vimPlugins; [
-        {
-          plugin = tokyonight-nvim;
-          type = "lua";
-          config = ''
-            vim.cmd[[colorscheme tokyonight-night]]
-          '';
-        }
-      ];
+      programs.neovim.plugins = with pkgs.vimPlugins; [{
+        plugin = tokyonight-nvim;
+        type = "lua";
+        config = ''
+          vim.cmd[[colorscheme tokyonight-night]]
+        '';
+      }];
 
       # Bat theme
       programs.bat.config.theme = "TwoDark"; # Close to Tokyo Night
@@ -256,14 +244,14 @@ in {
       # Lazygit theme
       programs.lazygit.settings = {
         gui.theme = {
-          activeBorderColor = ["#7aa2f7" "bold"];
-          inactiveBorderColor = ["#414868"];
-          selectedLineBgColor = ["#33467c"];
-          selectedRangeBgColor = ["#33467c"];
-          cherryPickedCommitBgColor = ["#33467c"];
-          cherryPickedCommitFgColor = ["#7aa2f7"];
-          unstagedChangesColor = ["#f7768e"];
-          defaultFgColor = ["#c0caf5"];
+          activeBorderColor = [ "#7aa2f7" "bold" ];
+          inactiveBorderColor = [ "#414868" ];
+          selectedLineBgColor = [ "#33467c" ];
+          selectedRangeBgColor = [ "#33467c" ];
+          cherryPickedCommitBgColor = [ "#33467c" ];
+          cherryPickedCommitFgColor = [ "#7aa2f7" ];
+          unstagedChangesColor = [ "#f7768e" ];
+          defaultFgColor = [ "#c0caf5" ];
         };
       };
 
@@ -302,13 +290,14 @@ in {
     };
 
     # Wallpaper
-    environment.systemPackages = with pkgs; [
-      (writeShellScriptBin "set-wallpaper" ''
-        #!/usr/bin/env bash
-        # Set Tokyo Night themed wallpaper
-        echo "Wallpaper functionality disabled - add wallpaper manually with swww"
-        echo "Usage: swww img /path/to/wallpaper.jpg --transition-type wipe --transition-angle 30"
-      '')
-    ];
+    environment.systemPackages = with pkgs;
+      [
+        (writeShellScriptBin "set-wallpaper" ''
+          #!/usr/bin/env bash
+          # Set Tokyo Night themed wallpaper
+          echo "Wallpaper functionality disabled - add wallpaper manually with swww"
+          echo "Usage: swww img /path/to/wallpaper.jpg --transition-type wipe --transition-angle 30"
+        '')
+      ];
   };
 }

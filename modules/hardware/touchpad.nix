@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib; {
   options.hardware.touchpad.enable = mkEnableOption "Enhanced touchpad support";
 
@@ -28,8 +23,8 @@ with lib; {
       twoFingerScroll = true;
       palmDetect = true;
       tapButtons = true;
-      buttonsMap = [1 3 2];
-      fingersMap = [0 0 0];
+      buttonsMap = [ 1 3 2 ];
+      fingersMap = [ 0 0 0 ];
     };
 
     # Touchpad packages

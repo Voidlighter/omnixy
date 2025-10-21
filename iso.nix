@@ -1,12 +1,6 @@
 # OmniXY NixOS Live ISO Configuration
 # This creates a bootable ISO image with OmniXY pre-installed
-{
-  config,
-  pkgs,
-  lib,
-  modulesPath,
-  ...
-}: {
+{ config, pkgs, lib, modulesPath, ... }: {
   imports = [
     # Include the basic ISO image module (without Calamares to avoid conflicts)
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
@@ -43,27 +37,23 @@
 
     # Boot splash (optional)
     splashImage =
-      if builtins.pathExists ./assets/logo.png
-      then ./assets/logo.png
-      else null;
+      if builtins.pathExists ./assets/logo.png then ./assets/logo.png else null;
 
     # Desktop entry for installer
-    contents = [
-      {
-        source = pkgs.writeText "omnixy-install.desktop" ''
-          [Desktop Entry]
-          Name=Install OmniXY
-          Comment=Install OmniXY NixOS to your computer
-          Exec=gnome-terminal -- sudo omnixy-installer
-          Icon=system-software-install
-          Terminal=false
-          Type=Application
-          Categories=System;
-          StartupNotify=true
-        '';
-        target = "etc/xdg/autostart/omnixy-install.desktop";
-      }
-    ];
+    contents = [{
+      source = pkgs.writeText "omnixy-install.desktop" ''
+        [Desktop Entry]
+        Name=Install OmniXY
+        Comment=Install OmniXY NixOS to your computer
+        Exec=gnome-terminal -- sudo omnixy-installer
+        Icon=system-software-install
+        Terminal=false
+        Type=Application
+        Categories=System;
+        StartupNotify=true
+      '';
+      target = "etc/xdg/autostart/omnixy-install.desktop";
+    }];
   };
 
   # System configuration for live ISO
@@ -73,12 +63,13 @@
   nixpkgs.config.allowUnfree = true;
 
   # ISO image filename
-  image.fileName = "omnixy-${config.system.nixos.label}-${pkgs.stdenv.hostPlatform.system}.iso";
+  image.fileName =
+    "omnixy-${config.system.nixos.label}-${pkgs.stdenv.hostPlatform.system}.iso";
 
   # Enable flakes
   nix = {
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
 
       # Binary caches
@@ -104,7 +95,7 @@
     # Enable firewall but allow common services for live session
     firewall = {
       enable = true;
-      allowedTCPPorts = [22 80 443 3000 8080];
+      allowedTCPPorts = [ 22 80 443 3000 8080 ];
     };
   };
 
@@ -184,7 +175,8 @@
     enable = true;
     settings = {
       PermitRootLogin = "no";
-      PasswordAuthentication = lib.mkForce true; # Override core.nix setting for ISO
+      PasswordAuthentication =
+        lib.mkForce true; # Override core.nix setting for ISO
       PermitEmptyPasswords = lib.mkForce true; # For live session only
     };
   };
@@ -213,7 +205,7 @@
     # Package configuration
     packages = {
       # Don't exclude anything for the live session showcase
-      exclude = [];
+      exclude = [ ];
     };
   };
 
@@ -358,7 +350,7 @@
   # Boot configuration for ISO
   boot = {
     # Support for various filesystems
-    supportedFilesystems = ["btrfs" "ext4" "xfs" "ntfs" "fat32" "exfat"];
+    supportedFilesystems = [ "btrfs" "ext4" "xfs" "ntfs" "fat32" "exfat" ];
 
     # Include lots of modules for hardware compatibility
     initrd.availableKernelModules = [

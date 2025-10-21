@@ -8,8 +8,7 @@ with lib;
 let
   cfg = config.omnixy.desktop;
   omnixy = import ../../helpers.nix { inherit config pkgs lib; };
-in
-{
+in {
   config = mkIf (cfg.enable or true) {
     # Install required packages
     environment.systemPackages = with pkgs; [
@@ -79,7 +78,12 @@ in
 
       background {
           monitor =
-          path = ${if cfg.wallpaper != null then toString cfg.wallpaper else "~/Pictures/wallpaper.jpg"}
+          path = ${
+            if cfg.wallpaper != null then
+              toString cfg.wallpaper
+            else
+              "~/Pictures/wallpaper.jpg"
+          }
           blur_passes = 3
           blur_size = 8
           noise = 0.0117

@@ -1,14 +1,10 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 # Interactive menu system for OmniXY
 # Terminal-based menus for system management and productivity
-with lib; let
+with lib;
+let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+  omnixy = import ./helpers.nix { inherit config pkgs lib; };
 in {
   config = mkIf (cfg.enable or true) {
     # Interactive menu scripts
@@ -40,7 +36,9 @@ in {
           echo -e "''${WHITE}           🚀 Declarative • 🎨 Beautiful • ⚡ Fast''${NC}"
           echo
           echo -e "''${BLUE}═══════════════════════════════════════════════════════''${NC}"
-          echo -e "''${WHITE}  Theme: ''${YELLOW}${cfg.theme}''${WHITE}  │  User: ''${GREEN}${cfg.user}''${WHITE}  │  Preset: ''${PURPLE}${cfg.preset or "custom"}''${NC}"
+          echo -e "''${WHITE}  Theme: ''${YELLOW}${cfg.theme}''${WHITE}  │  User: ''${GREEN}${cfg.user}''${WHITE}  │  Preset: ''${PURPLE}${
+            cfg.preset or "custom"
+          }''${NC}"
           echo -e "''${BLUE}═══════════════════════════════════════════════════════''${NC}"
           echo
         }
@@ -435,66 +433,67 @@ in {
       '')
 
       # Quick theme selector
-      (omnixy.makeScript "omnixy-theme-picker" "Quick theme picker with preview" ''
-        #!/bin/bash
+      (omnixy.makeScript "omnixy-theme-picker"
+        "Quick theme picker with preview" ''
+          #!/bin/bash
 
-        # Colors
-        CYAN='\033[0;36m'
-        WHITE='\033[1;37m'
-        GREEN='\033[0;32m'
-        YELLOW='\033[1;33m'
-        RED='\033[0;31m'
-        NC='\033[0m'
+          # Colors
+          CYAN='\033[0;36m'
+          WHITE='\033[1;37m'
+          GREEN='\033[0;32m'
+          YELLOW='\033[1;33m'
+          RED='\033[0;31m'
+          NC='\033[0m'
 
-        themes=(
-          "tokyo-night:🌃:Dark theme with vibrant colors"
-          "catppuccin:🎀:Pastel theme with modern aesthetics"
-          "gruvbox:🟤:Retro theme with warm colors"
-          "nord:❄️ :Arctic theme with cool colors"
-          "everforest:🌲:Green forest theme"
-          "rose-pine:🌹:Cozy theme with muted colors"
-          "kanagawa:🌊:Japanese-inspired theme"
-          "catppuccin-latte:☀️ :Light catppuccin variant"
-          "matte-black:⚫:Minimalist dark theme"
-          "osaka-jade:💎:Jade green accent theme"
-          "ristretto:☕:Coffee-inspired warm theme"
-        )
+          themes=(
+            "tokyo-night:🌃:Dark theme with vibrant colors"
+            "catppuccin:🎀:Pastel theme with modern aesthetics"
+            "gruvbox:🟤:Retro theme with warm colors"
+            "nord:❄️ :Arctic theme with cool colors"
+            "everforest:🌲:Green forest theme"
+            "rose-pine:🌹:Cozy theme with muted colors"
+            "kanagawa:🌊:Japanese-inspired theme"
+            "catppuccin-latte:☀️ :Light catppuccin variant"
+            "matte-black:⚫:Minimalist dark theme"
+            "osaka-jade:💎:Jade green accent theme"
+            "ristretto:☕:Coffee-inspired warm theme"
+          )
 
-        clear
-        echo -e "''${CYAN}🎨 OmniXY Theme Picker''${NC}"
-        echo -e "''${WHITE}Current Theme: ''${YELLOW}${cfg.theme}''${NC}"
-        echo
-        echo -e "''${WHITE}Available Themes:''${NC}"
-        echo
+          clear
+          echo -e "''${CYAN}🎨 OmniXY Theme Picker''${NC}"
+          echo -e "''${WHITE}Current Theme: ''${YELLOW}${cfg.theme}''${NC}"
+          echo
+          echo -e "''${WHITE}Available Themes:''${NC}"
+          echo
 
-        for i in "''${!themes[@]}"; do
-          IFS=':' read -ra theme_info <<< "''${themes[$i]}"
-          theme_name="''${theme_info[0]}"
-          theme_icon="''${theme_info[1]}"
-          theme_desc="''${theme_info[2]}"
+          for i in "''${!themes[@]}"; do
+            IFS=':' read -ra theme_info <<< "''${themes[$i]}"
+            theme_name="''${theme_info[0]}"
+            theme_icon="''${theme_info[1]}"
+            theme_desc="''${theme_info[2]}"
 
-          printf "''${GREEN}%2d.''${NC} %s %-15s - %s\n" "$((i+1))" "$theme_icon" "$theme_name" "$theme_desc"
-        done
+            printf "''${GREEN}%2d.''${NC} %s %-15s - %s\n" "$((i+1))" "$theme_icon" "$theme_name" "$theme_desc"
+          done
 
-        echo
-        echo -e "''${RED} 0.''${NC} Cancel"
-        echo
-        echo -ne "''${CYAN}Select theme (1-''${#themes[@]}): ''${NC}"
-        read -r choice
+          echo
+          echo -e "''${RED} 0.''${NC} Cancel"
+          echo
+          echo -ne "''${CYAN}Select theme (1-''${#themes[@]}): ''${NC}"
+          read -r choice
 
-        if [[ "$choice" -ge 1 && "$choice" -le "''${#themes[@]}" ]]; then
-          IFS=':' read -ra theme_info <<< "''${themes[$((choice-1))]}"
-          selected_theme="''${theme_info[0]}"
+          if [[ "$choice" -ge 1 && "$choice" -le "''${#themes[@]}" ]]; then
+            IFS=':' read -ra theme_info <<< "''${themes[$((choice-1))]}"
+            selected_theme="''${theme_info[0]}"
 
-          echo -e "''${GREEN}Switching to ''${selected_theme}...''${NC}"
-          omnixy-theme "$selected_theme"
-        elif [[ "$choice" == "0" ]]; then
-          echo -e "''${YELLOW}Cancelled.''${NC}"
-        else
-          echo -e "''${RED}Invalid selection!''${NC}"
-          exit 1
-        fi
-      '')
+            echo -e "''${GREEN}Switching to ''${selected_theme}...''${NC}"
+            omnixy-theme "$selected_theme"
+          elif [[ "$choice" == "0" ]]; then
+            echo -e "''${YELLOW}Cancelled.''${NC}"
+          else
+            echo -e "''${RED}Invalid selection!''${NC}"
+            exit 1
+          fi
+        '')
     ];
 
     # Shell aliases for easy access

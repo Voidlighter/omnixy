@@ -1,12 +1,8 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 # Shared library module for OmniXY
 # Provides common utilities, helpers, and patterns for other modules
-with lib; let
+with lib;
+let
   cfg = config.omnixy;
 
   # Helper functions for common patterns
@@ -21,28 +17,25 @@ with lib; let
 
     # Common color helper that works with both nix-colors and fallbacks
     getColor = colorName: fallback:
-      if cfg.colorScheme != null && cfg.colorScheme ? colors && cfg.colorScheme.colors ? ${colorName}
-      then "#${cfg.colorScheme.colors.${colorName}}"
-      else fallback;
+      if cfg.colorScheme != null && cfg.colorScheme ? colors
+      && cfg.colorScheme.colors ? ${colorName} then
+        "#${cfg.colorScheme.colors.${colorName}}"
+      else
+        fallback;
 
     # Feature-based conditional inclusion
     withFeature = feature: content: mkIf (helpers.isEnabled feature) content;
-    withoutFeature = feature: content: mkIf (!helpers.isEnabled feature) content;
+    withoutFeature = feature: content:
+      mkIf (!helpers.isEnabled feature) content;
 
     # User-specific home-manager configuration
-    forUser = userConfig: {
-      home-manager.users.${cfg.user} = userConfig;
-    };
+    forUser = userConfig: { home-manager.users.${cfg.user} = userConfig; };
 
     # Package filtering with exclusion support
     filterPackages = packages:
-      builtins.filter (
-        pkg: let
-          name = pkg.name or pkg.pname or "unknown";
-        in
-          !(builtins.elem name (cfg.packages.exclude or []))
-      )
-      packages;
+      builtins.filter (pkg:
+        let name = pkg.name or pkg.pname or "unknown";
+        in !(builtins.elem name (cfg.packages.exclude or [ ]))) packages;
 
     # Create a standardized script with OmniXY branding
     makeScript = name: description: script:
@@ -89,13 +82,14 @@ with lib; let
 
     # Standard application categories for consistent organization
     categories = {
-      system = ["file managers" "terminals" "system monitors"];
-      development = ["editors" "version control" "compilers" "debuggers"];
-      multimedia = ["media players" "image viewers" "audio tools" "video editors"];
-      productivity = ["office suites" "note taking" "calendars" "email"];
-      communication = ["messaging" "video calls" "social media"];
-      gaming = ["game launchers" "emulators" "performance tools"];
-      utilities = ["calculators" "converters" "system tools"];
+      system = [ "file managers" "terminals" "system monitors" ];
+      development = [ "editors" "version control" "compilers" "debuggers" ];
+      multimedia =
+        [ "media players" "image viewers" "audio tools" "video editors" ];
+      productivity = [ "office suites" "note taking" "calendars" "email" ];
+      communication = [ "messaging" "video calls" "social media" ];
+      gaming = [ "game launchers" "emulators" "performance tools" ];
+      utilities = [ "calculators" "converters" "system tools" ];
     };
 
     # Standard service patterns
@@ -103,25 +97,23 @@ with lib; let
       # Create a basic systemd service with OmniXY defaults
       make = name: serviceConfig: {
         description = serviceConfig.description or "OmniXY ${name} service";
-        wantedBy = serviceConfig.wantedBy or ["multi-user.target"];
-        after = serviceConfig.after or ["network.target"];
-        serviceConfig =
-          {
-            Type = serviceConfig.type or "simple";
-            User = serviceConfig.user or cfg.user;
-            Group = serviceConfig.group or "users";
-            Restart = serviceConfig.restart or "on-failure";
-            RestartSec = serviceConfig.restartSec or "5";
-          }
-          // (serviceConfig.serviceConfig or {});
+        wantedBy = serviceConfig.wantedBy or [ "multi-user.target" ];
+        after = serviceConfig.after or [ "network.target" ];
+        serviceConfig = {
+          Type = serviceConfig.type or "simple";
+          User = serviceConfig.user or cfg.user;
+          Group = serviceConfig.group or "users";
+          Restart = serviceConfig.restart or "on-failure";
+          RestartSec = serviceConfig.restartSec or "5";
+        } // (serviceConfig.serviceConfig or { });
       };
 
       # Create a user service
       user = name: serviceConfig: {
-        home-manager.users.${cfg.user}.systemd.user.services.${name} = (mkHelpers cfg).service.make name (serviceConfig
-          // {
-            wantedBy = ["default.target"];
-            after = ["graphical-session.target"];
+        home-manager.users.${cfg.user}.systemd.user.services.${name} =
+          (mkHelpers cfg).service.make name (serviceConfig // {
+            wantedBy = [ "default.target" ];
+            after = [ "graphical-session.target" ];
           });
       };
     };
@@ -150,16 +142,21 @@ in {
     # Standard shell aliases that work consistently across modules
     programs.bash.shellAliases = {
       # OmniXY management
-      omnixy-rebuild = "sudo nixos-rebuild switch --flake ${helpers.paths.config}#veridia";
-      omnixy-build = "sudo nixos-rebuild build --flake ${helpers.paths.config}#veridia";
-      omnixy-test = "sudo nixos-rebuild test --flake ${helpers.paths.config}#veridia";
+      omnixy-rebuild =
+        "sudo nixos-rebuild switch --flake ${helpers.paths.config}#veridia";
+      omnixy-build =
+        "sudo nixos-rebuild build --flake ${helpers.paths.config}#veridia";
+      omnixy-test =
+        "sudo nixos-rebuild test --flake ${helpers.paths.config}#veridia";
       omnixy-update = "cd ${helpers.paths.config} && sudo nix flake update";
       omnixy-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
-      omnixy-generations = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
+      omnixy-generations =
+        "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
 
       # System information
       omnixy-status = "omnixy-info";
-      omnixy-features = "echo 'Enabled features:' && omnixy-info | grep -A 10 'Active Features'";
+      omnixy-features =
+        "echo 'Enabled features:' && omnixy-info | grep -A 10 'Active Features'";
 
       # Quick navigation
       omnixy-config = "cd ${helpers.paths.config}";
@@ -192,13 +189,8 @@ in {
         echo "  User home: ${helpers.userPath ""}"
         echo ""
         echo "Features:"
-        ${concatStringsSep "\n" (mapAttrsToList (
-            name: enabled: ''echo "  ${name}: ${
-                if enabled
-                then "✅"
-                else "❌"
-              }"''
-          )
+        ${concatStringsSep "\n" (mapAttrsToList
+          (name: enabled: ''echo "  ${name}: ${if enabled then "✅" else "❌"}"'')
           cfg.features)}
       '')
     ];

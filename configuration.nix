@@ -1,14 +1,10 @@
 # OmniXY NixOS Configuration
 # This is the main NixOS configuration file
 # Edit this file to define what should be installed on your system
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
+{ config, pkgs, lib, ... }:
+let
   # Import custom modules
-  omnixy = import ./modules {inherit config pkgs lib;};
+  omnixy = import ./modules { inherit config pkgs lib; };
 
   # Current theme - can be changed easily
   currentTheme = "tokyo-night";
@@ -36,13 +32,15 @@ in {
     ./modules/hardware
   ];
 
+  system.nixos.tags = [ "omni-veridia" ];
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   # Enable flakes
   nix = {
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
 
       # Binary caches
@@ -88,7 +86,7 @@ in {
     # Firewall
     firewall = {
       enable = true;
-      allowedTCPPorts = [22 80 443 3000 8080];
+      allowedTCPPorts = [ 22 80 443 3000 8080 ];
     };
   };
 
@@ -124,7 +122,7 @@ in {
   # Enable the X11 windowing system
   services.xserver = {
     enable = true;
-    excludePackages = [pkgs.xterm];
+    excludePackages = [ pkgs.xterm ];
   };
 
   # Display manager disabled - using tuigreet in services.nix
@@ -135,7 +133,7 @@ in {
   # Console configuration
   console = {
     font = "ter-132n";
-    packages = with pkgs; [terminus_font];
+    packages = with pkgs; [ terminus_font ];
     keyMap = "us";
   };
 
@@ -155,7 +153,8 @@ in {
 
     # FIXME:
     # Quick Setup - Choose a preset that matches your use case
-    preset = "developer"; # Options: minimal, developer, creator, gamer, office, everything
+    preset =
+      "developer"; # Options: minimal, developer, creator, gamer, office, everything
 
     # Security configuration
     security = {

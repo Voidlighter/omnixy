@@ -1,14 +1,10 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 # Catppuccin Latte theme for OmniXY
 # A soothing light theme with excellent contrast
-with lib; let
+with lib;
+let
   cfg = config.omnixy;
-  omnixy = import ../helpers.nix {inherit config pkgs lib;};
+  omnixy = import ../helpers.nix { inherit config pkgs lib; };
 
   # Catppuccin Latte color palette
   colors = {
@@ -53,7 +49,8 @@ in {
     # System-level theme configuration
     {
       # Set theme wallpaper
-      omnixy.desktop.wallpaper = ./wallpapers/catppuccin-latte/1-catppuccin-latte.png;
+      omnixy.desktop.wallpaper =
+        ./wallpapers/catppuccin-latte/1-catppuccin-latte.png;
 
       # Hyprland theme colors (from omarchy)
       environment.etc."omnixy/hyprland/theme.conf".text = ''
@@ -115,13 +112,9 @@ in {
           package = pkgs.papirus-icon-theme;
         };
 
-        gtk3.extraConfig = {
-          gtk-application-prefer-dark-theme = 0;
-        };
+        gtk3.extraConfig = { gtk-application-prefer-dark-theme = 0; };
 
-        gtk4.extraConfig = {
-          gtk-application-prefer-dark-theme = 0;
-        };
+        gtk4.extraConfig = { gtk-application-prefer-dark-theme = 0; };
       };
 
       # Qt theming (light theme)
@@ -132,164 +125,169 @@ in {
       };
 
       # Kitty terminal theme
-      programs.kitty = mkIf (omnixy.isEnabled "coding" || omnixy.isEnabled "media") {
-        enable = true;
-        themeFile = "Catppuccin-Latte";
-        settings = {
-          background = colors.base;
-          foreground = colors.text;
-          selection_background = colors.surface1;
-          selection_foreground = colors.text;
+      programs.kitty =
+        mkIf (omnixy.isEnabled "coding" || omnixy.isEnabled "media") {
+          enable = true;
+          themeFile = "Catppuccin-Latte";
+          settings = {
+            background = colors.base;
+            foreground = colors.text;
+            selection_background = colors.surface1;
+            selection_foreground = colors.text;
 
-          # Cursor colors
-          cursor = colors.text;
-          cursor_text_color = colors.base;
+            # Cursor colors
+            cursor = colors.text;
+            cursor_text_color = colors.base;
 
-          # URL underline color when hovering
-          url_color = colors.blue;
+            # URL underline color when hovering
+            url_color = colors.blue;
 
-          # Tab colors
-          active_tab_background = colors.blue;
-          active_tab_foreground = colors.base;
-          inactive_tab_background = colors.surface0;
-          inactive_tab_foreground = colors.subtext1;
+            # Tab colors
+            active_tab_background = colors.blue;
+            active_tab_foreground = colors.base;
+            inactive_tab_background = colors.surface0;
+            inactive_tab_foreground = colors.subtext1;
 
-          # Window border colors
-          active_border_color = colors.blue;
-          inactive_border_color = colors.overlay0;
+            # Window border colors
+            active_border_color = colors.blue;
+            inactive_border_color = colors.overlay0;
+          };
         };
-      };
 
       # Alacritty terminal theme
-      programs.alacritty = mkIf (omnixy.isEnabled "coding" || omnixy.isEnabled "media") {
-        enable = true;
-        settings = {
-          colors = {
-            primary = {
-              background = colors.base;
-              foreground = colors.text;
-            };
-            cursor = {
-              text = colors.base;
-              cursor = colors.text;
-            };
-            normal = {
-              black = colors.surface1;
-              red = colors.red;
-              green = colors.green;
-              yellow = colors.yellow;
-              blue = colors.blue;
-              magenta = colors.mauve;
-              cyan = colors.teal;
-              white = colors.text;
-            };
-            bright = {
-              black = colors.overlay1;
-              red = colors.red;
-              green = colors.green;
-              yellow = colors.yellow;
-              blue = colors.blue;
-              magenta = colors.mauve;
-              cyan = colors.teal;
-              white = colors.text;
+      programs.alacritty =
+        mkIf (omnixy.isEnabled "coding" || omnixy.isEnabled "media") {
+          enable = true;
+          settings = {
+            colors = {
+              primary = {
+                background = colors.base;
+                foreground = colors.text;
+              };
+              cursor = {
+                text = colors.base;
+                cursor = colors.text;
+              };
+              normal = {
+                black = colors.surface1;
+                red = colors.red;
+                green = colors.green;
+                yellow = colors.yellow;
+                blue = colors.blue;
+                magenta = colors.mauve;
+                cyan = colors.teal;
+                white = colors.text;
+              };
+              bright = {
+                black = colors.overlay1;
+                red = colors.red;
+                green = colors.green;
+                yellow = colors.yellow;
+                blue = colors.blue;
+                magenta = colors.mauve;
+                cyan = colors.teal;
+                white = colors.text;
+              };
             };
           };
         };
-      };
 
       # Waybar theme
-      programs.waybar = mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
-        enable = true;
-        style = ''
-          * {
-            font-family: "JetBrainsMono Nerd Font";
-            font-size: 13px;
-            border: none;
-            border-radius: 0;
-            min-height: 0;
-          }
+      programs.waybar =
+        mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
+          enable = true;
+          style = ''
+            * {
+              font-family: "JetBrainsMono Nerd Font";
+              font-size: 13px;
+              border: none;
+              border-radius: 0;
+              min-height: 0;
+            }
 
-          window#waybar {
-            background: ${colors.base};
-            color: ${colors.text};
-            border-bottom: 2px solid ${colors.blue};
-          }
+            window#waybar {
+              background: ${colors.base};
+              color: ${colors.text};
+              border-bottom: 2px solid ${colors.blue};
+            }
 
-          #workspaces button {
-            padding: 0 8px;
-            background: transparent;
-            color: ${colors.subtext1};
-            border-bottom: 2px solid transparent;
-          }
+            #workspaces button {
+              padding: 0 8px;
+              background: transparent;
+              color: ${colors.subtext1};
+              border-bottom: 2px solid transparent;
+            }
 
-          #workspaces button.active {
-            color: ${colors.blue};
-            border-bottom-color: ${colors.blue};
-          }
+            #workspaces button.active {
+              color: ${colors.blue};
+              border-bottom-color: ${colors.blue};
+            }
 
-          #workspaces button:hover {
-            color: ${colors.text};
-            background: ${colors.surface0};
-          }
+            #workspaces button:hover {
+              color: ${colors.text};
+              background: ${colors.surface0};
+            }
 
-          #clock, #battery, #cpu, #memory, #network, #pulseaudio {
-            padding: 0 10px;
-            margin: 0 2px;
-            background: ${colors.surface0};
-            color: ${colors.text};
-          }
+            #clock, #battery, #cpu, #memory, #network, #pulseaudio {
+              padding: 0 10px;
+              margin: 0 2px;
+              background: ${colors.surface0};
+              color: ${colors.text};
+            }
 
-          #battery.critical {
-            color: ${colors.red};
-          }
+            #battery.critical {
+              color: ${colors.red};
+            }
 
-          #battery.warning {
-            color: ${colors.yellow};
-          }
-        '';
-      };
+            #battery.warning {
+              color: ${colors.yellow};
+            }
+          '';
+        };
 
       # Rofi theme
-      programs.rofi = mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
-        enable = true;
-        theme = {
-          "*" = {
-            background-color = mkLiteral colors.base;
-            foreground-color = mkLiteral colors.text;
-            border-color = mkLiteral colors.blue;
-            separatorcolor = mkLiteral colors.surface0;
-            scrollbar-handle = mkLiteral colors.blue;
-          };
+      programs.rofi =
+        mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
+          enable = true;
+          theme = {
+            "*" = {
+              background-color = mkLiteral colors.base;
+              foreground-color = mkLiteral colors.text;
+              border-color = mkLiteral colors.blue;
+              separatorcolor = mkLiteral colors.surface0;
+              scrollbar-handle = mkLiteral colors.blue;
+            };
 
-          "#window" = {
-            border = mkLiteral "2px";
-            border-radius = mkLiteral "8px";
-            padding = mkLiteral "20px";
-          };
+            "#window" = {
+              border = mkLiteral "2px";
+              border-radius = mkLiteral "8px";
+              padding = mkLiteral "20px";
+            };
 
-          "#element selected" = {
-            background-color = mkLiteral colors.blue;
-            text-color = mkLiteral colors.base;
+            "#element selected" = {
+              background-color = mkLiteral colors.blue;
+              text-color = mkLiteral colors.base;
+            };
           };
         };
-      };
 
       # Mako notification theme
-      services.mako = mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
-        enable = true;
-        settings = {
-          font = "JetBrainsMono Nerd Font 10";
-          background-color = colors.base;
-          text-color = colors.text;
-          border-color = colors.blue;
-          border-size = 2;
-          border-radius = 8;
-          padding = "10";
-          margin = "5";
-          default-timeout = 5000;
-          progress-color = colors.blue;
+      services.mako =
+        mkIf (omnixy.isEnabled "media" || omnixy.isEnabled "gaming") {
+          enable = true;
+          settings = {
+            font = "JetBrainsMono Nerd Font 10";
+            background-color = colors.base;
+            text-color = colors.text;
+            border-color = colors.blue;
+            border-size = 2;
+            border-radius = 8;
+            padding = "10";
+            margin = "5";
+            default-timeout = 5000;
+            progress-color = colors.blue;
+          };
         };
-      };
 
       # VSCode theme
       programs.vscode = mkIf (omnixy.isEnabled "coding") {
@@ -297,7 +295,8 @@ in {
         userSettings = {
           "workbench.colorTheme" = "Catppuccin Latte";
           "workbench.preferredLightColorTheme" = "Catppuccin Latte";
-          "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'Droid Sans Mono', 'monospace'";
+          "editor.fontFamily" =
+            "'JetBrainsMono Nerd Font', 'Droid Sans Mono', 'monospace'";
           "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
         };
       };
@@ -309,9 +308,7 @@ in {
           set background=light
           colorscheme catppuccin-latte
         '';
-        plugins = with pkgs.vimPlugins; [
-          catppuccin-nvim
-        ];
+        plugins = with pkgs.vimPlugins; [ catppuccin-nvim ];
       };
 
       # Git diff and bat theme
@@ -324,8 +321,8 @@ in {
       programs.lazygit.settings = {
         gui.theme = {
           lightTheme = true;
-          selectedLineBgColor = [colors.surface0];
-          selectedRangeBgColor = [colors.surface0];
+          selectedLineBgColor = [ colors.surface0 ];
+          selectedRangeBgColor = [ colors.surface0 ];
         };
       };
 
@@ -338,15 +335,9 @@ in {
             success_symbol = "[➜](bold ${colors.green})";
             error_symbol = "[➜](bold ${colors.red})";
           };
-          directory = {
-            style = "bold ${colors.blue}";
-          };
-          git_branch = {
-            style = "bold ${colors.mauve}";
-          };
-          git_status = {
-            style = "bold ${colors.yellow}";
-          };
+          directory = { style = "bold ${colors.blue}"; };
+          git_branch = { style = "bold ${colors.mauve}"; };
+          git_status = { style = "bold ${colors.yellow}"; };
         };
       };
     })

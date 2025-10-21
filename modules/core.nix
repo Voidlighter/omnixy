@@ -1,11 +1,6 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.omnixy;
+{ config, pkgs, lib, ... }:
+with lib;
+let cfg = config.omnixy;
 in {
   options.omnixy = {
     enable = mkEnableOption "OmniXY system configuration";
@@ -20,9 +15,18 @@ in {
 
     # Theme Configuration
     theme = mkOption {
-      type = types.enum ["tokyo-night" "catppuccin" "gruvbox" "nord" "everforest" "rose-pine" "kanagawa"];
+      type = types.enum [
+        "tokyo-night"
+        "catppuccin"
+        "gruvbox"
+        "nord"
+        "everforest"
+        "rose-pine"
+        "kanagawa"
+      ];
       default = "tokyo-night";
-      description = "System theme - changes colors, wallpaper, and overall look";
+      description =
+        "System theme - changes colors, wallpaper, and overall look";
       example = "catppuccin";
     };
 
@@ -34,7 +38,7 @@ in {
     };
 
     displayManager = mkOption {
-      type = types.enum ["gdm" "tuigreet"];
+      type = types.enum [ "gdm" "tuigreet" ];
       default = "tuigreet";
       description = "Display manager to use for login";
     };
@@ -42,7 +46,8 @@ in {
     colorScheme = mkOption {
       type = types.nullOr types.attrs;
       default = null;
-      description = "Color scheme from nix-colors. If null, uses theme-specific colors.";
+      description =
+        "Color scheme from nix-colors. If null, uses theme-specific colors.";
       example = "inputs.nix-colors.colorSchemes.tokyo-night-dark";
     };
 
@@ -55,29 +60,43 @@ in {
     # Feature Categories - Simple on/off switches for major functionality
     features = {
       # Development
-      coding = mkEnableOption "Development tools, editors, and programming languages";
+      coding =
+        mkEnableOption "Development tools, editors, and programming languages";
       containers = mkEnableOption "Docker and container support";
 
       # Entertainment
-      gaming = mkEnableOption "Gaming support with Steam, Wine, and performance tools";
-      media = mkEnableOption "Video players, image viewers, and media editing tools";
+      gaming =
+        mkEnableOption "Gaming support with Steam, Wine, and performance tools";
+      media =
+        mkEnableOption "Video players, image viewers, and media editing tools";
 
       # Productivity
-      office = mkEnableOption "Office suite, PDF viewers, and productivity apps";
-      communication = mkEnableOption "Chat apps, email clients, and video conferencing";
+      office =
+        mkEnableOption "Office suite, PDF viewers, and productivity apps";
+      communication =
+        mkEnableOption "Chat apps, email clients, and video conferencing";
 
       # System
       virtualization = mkEnableOption "VM support (VirtualBox, QEMU, etc.)";
       backup = mkEnableOption "Backup tools and cloud sync applications";
 
       # Appearance
-      customThemes = mkEnableOption "Advanced theming with nix-colors integration";
-      wallpaperEffects = mkEnableOption "Dynamic wallpapers and color generation";
+      customThemes =
+        mkEnableOption "Advanced theming with nix-colors integration";
+      wallpaperEffects =
+        mkEnableOption "Dynamic wallpapers and color generation";
     };
 
     # Simple Presets - Predefined feature combinations
     preset = mkOption {
-      type = types.nullOr (types.enum ["minimal" "developer" "creator" "gamer" "office" "everything"]);
+      type = types.nullOr (types.enum [
+        "minimal"
+        "developer"
+        "creator"
+        "gamer"
+        "office"
+        "everything"
+      ]);
       default = null;
       description = ''
         Quick setup preset that automatically enables related features:
@@ -138,7 +157,7 @@ in {
     system.autoUpgrade = {
       enable = true;
       flake = "/etc/nixos#veridia";
-      flags = ["--update-input" "nixpkgs" "--commit-lock-file"];
+      flags = [ "--update-input" "nixpkgs" "--commit-lock-file" ];
       dates = "weekly";
     };
 
@@ -154,17 +173,13 @@ in {
       sudo = {
         enable = true;
         wheelNeedsPassword = true;
-        extraRules = [
-          {
-            groups = ["wheel"];
-            commands = [
-              {
-                command = "/run/current-system/sw/bin/nixos-rebuild";
-                options = ["NOPASSWD"];
-              }
-            ];
-          }
-        ];
+        extraRules = [{
+          groups = [ "wheel" ];
+          commands = [{
+            command = "/run/current-system/sw/bin/nixos-rebuild";
+            options = [ "NOPASSWD" ];
+          }];
+        }];
       };
 
       polkit.enable = true;
@@ -256,9 +271,7 @@ in {
         lfs.enable = true;
       };
 
-      npm = mkIf (cfg.features.coding or false) {
-        enable = true;
-      };
+      npm = mkIf (cfg.features.coding or false) { enable = true; };
 
       # Gaming configuration
       steam = mkIf (cfg.features.gaming or false) {
@@ -398,75 +411,39 @@ in {
         echo "📋 Basic Settings:"
         echo "   User: ${cfg.user}"
         echo "   Theme: ${cfg.theme}"
-        echo "   Preset: ${
-          if cfg.preset != null
-          then cfg.preset
-          else "custom"
-        }"
+        echo "   Preset: ${if cfg.preset != null then cfg.preset else "custom"}"
         echo "   Display Manager: ${cfg.displayManager}"
         echo ""
         echo "🎯 Active Features:"
         echo "   Development: ${
-          if cfg.features.coding or false
-          then "✅"
-          else "❌"
+          if cfg.features.coding or false then "✅" else "❌"
         }"
         echo "   Containers: ${
-          if cfg.features.containers or false
-          then "✅"
-          else "❌"
+          if cfg.features.containers or false then "✅" else "❌"
         }"
-        echo "   Gaming: ${
-          if cfg.features.gaming or false
-          then "✅"
-          else "❌"
-        }"
-        echo "   Media: ${
-          if cfg.features.media or false
-          then "✅"
-          else "❌"
-        }"
-        echo "   Office: ${
-          if cfg.features.office or false
-          then "✅"
-          else "❌"
-        }"
+        echo "   Gaming: ${if cfg.features.gaming or false then "✅" else "❌"}"
+        echo "   Media: ${if cfg.features.media or false then "✅" else "❌"}"
+        echo "   Office: ${if cfg.features.office or false then "✅" else "❌"}"
         echo "   Communication: ${
-          if cfg.features.communication or false
-          then "✅"
-          else "❌"
+          if cfg.features.communication or false then "✅" else "❌"
         }"
         echo "   Virtualization: ${
-          if cfg.features.virtualization or false
-          then "✅"
-          else "❌"
+          if cfg.features.virtualization or false then "✅" else "❌"
         }"
-        echo "   Backup: ${
-          if cfg.features.backup or false
-          then "✅"
-          else "❌"
-        }"
+        echo "   Backup: ${if cfg.features.backup or false then "✅" else "❌"}"
         echo ""
         echo "🎨 Theming:"
         echo "   Custom Themes: ${
-          if cfg.features.customThemes or false
-          then "✅"
-          else "❌"
+          if cfg.features.customThemes or false then "✅" else "❌"
         }"
         echo "   Wallpaper Effects: ${
-          if cfg.features.wallpaperEffects or false
-          then "✅"
-          else "❌"
+          if cfg.features.wallpaperEffects or false then "✅" else "❌"
         }"
         echo "   Color Scheme: ${
-          if cfg.colorScheme != null
-          then "Custom"
-          else "Theme-based"
+          if cfg.colorScheme != null then "Custom" else "Theme-based"
         }"
         echo "   Wallpaper: ${
-          if cfg.wallpaper != null
-          then toString cfg.wallpaper
-          else "Not set"
+          if cfg.wallpaper != null then toString cfg.wallpaper else "Not set"
         }"
         echo ""
         echo "💡 Quick Commands:"

@@ -1,39 +1,31 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 # Walker app launcher configuration for OmniXY
 # Modern replacement for Rofi with better Wayland integration
-with lib; let
+with lib;
+let
   cfg = config.omnixy;
-  omnixy = import ./helpers.nix {inherit config pkgs lib;};
+  omnixy = import ./helpers.nix { inherit config pkgs lib; };
 in {
   config = mkIf (cfg.enable or true) {
     # Add walker and convenience scripts to system packages
-    environment.systemPackages =
-      (with pkgs; [
-        walker
-      ])
-      ++ [
-        # Convenience scripts
-        (omnixy.makeScript "omnixy-launcher" "Launch OmniXY app launcher" ''
-          walker --config ~/.config/walker/config.json --css ~/.config/walker/themes/style.css
-        '')
+    environment.systemPackages = (with pkgs; [ walker ]) ++ [
+      # Convenience scripts
+      (omnixy.makeScript "omnixy-launcher" "Launch OmniXY app launcher" ''
+        walker --config ~/.config/walker/config.json --css ~/.config/walker/themes/style.css
+      '')
 
-        (omnixy.makeScript "omnixy-run" "Quick command runner" ''
-          walker --modules runner --config ~/.config/walker/config.json --css ~/.config/walker/themes/style.css
-        '')
+      (omnixy.makeScript "omnixy-run" "Quick command runner" ''
+        walker --modules runner --config ~/.config/walker/config.json --css ~/.config/walker/themes/style.css
+      '')
 
-        (omnixy.makeScript "omnixy-apps" "Application launcher" ''
-          walker --modules applications --config ~/.config/walker/config.json --css ~/.config/walker/themes/style.css
-        '')
+      (omnixy.makeScript "omnixy-apps" "Application launcher" ''
+        walker --modules applications --config ~/.config/walker/config.json --css ~/.config/walker/themes/style.css
+      '')
 
-        (omnixy.makeScript "omnixy-files" "File finder" ''
-          walker --modules finder --config ~/.config/walker/config.json --css ~/.config/walker/themes/style.css
-        '')
-      ];
+      (omnixy.makeScript "omnixy-files" "File finder" ''
+        walker --modules finder --config ~/.config/walker/config.json --css ~/.config/walker/themes/style.css
+      '')
+    ];
 
     # Create Walker configuration
     environment.etc."omnixy/walker/config.json".text = builtins.toJSON {
@@ -130,16 +122,16 @@ in {
       };
 
       # Theming based on current theme
-      theme =
-        if cfg.theme == "gruvbox"
-        then "gruvbox"
-        else if cfg.theme == "nord"
-        then "nord"
-        else if cfg.theme == "catppuccin"
-        then "catppuccin"
-        else if cfg.theme == "tokyo-night"
-        then "tokyo-night"
-        else "default";
+      theme = if cfg.theme == "gruvbox" then
+        "gruvbox"
+      else if cfg.theme == "nord" then
+        "nord"
+      else if cfg.theme == "catppuccin" then
+        "catppuccin"
+      else if cfg.theme == "tokyo-night" then
+        "tokyo-night"
+      else
+        "default";
     };
 
     # Create Walker CSS theme files
