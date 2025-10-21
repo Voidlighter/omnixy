@@ -284,7 +284,7 @@
         echo "5. Edit configuration.nix to set your username and theme"
         echo ""
         echo "6. Install NixOS:"
-        echo "   sudo nixos-install --flake /mnt/etc/nixos#omnixy"
+        echo "   sudo nixos-install --flake /mnt/etc/nixos#laserbeak"
         echo ""
         echo "7. Reboot and enjoy OmniXY!"
         

@@ -92,7 +92,8 @@ in
   };
 
   # Timezone and locale
-  time.timeZone = "America/New_York";
+  # FIXME: Input your timezone
+  time.timeZone = "America/Denver";
   i18n = {
     defaultLocale = "en_US.UTF-8";
     extraLocaleSettings = {
@@ -123,10 +124,12 @@ in
   services.xserver = {
     enable = true;
     excludePackages = [ pkgs.xterm ];
-
-    # Display manager disabled - using tuigreet in services.nix
-    displayManager.gdm.enable = false;
   };
+
+  # Display manager disabled - using tuigreet in services.nix
+
+  # TODO: This is a duplicate
+  # services.displayManager.gdm.enable = false;
 
   # Console configuration
   console = {
@@ -144,10 +147,12 @@ in
   # Custom OmniXY settings
   omnixy = {
     enable = true;
-    user = "user"; # Change this to your username
+    # FIXME: Change "cade" to your username
+    user = "cade";
     theme = currentTheme;
     displayManager = "tuigreet";
 
+    # FIXME: 
     # Quick Setup - Choose a preset that matches your use case
     preset = "developer"; # Options: minimal, developer, creator, gamer, office, everything
 
@@ -155,7 +160,7 @@ in
     security = {
       enable = true;
       fingerprint = {
-        enable = false;        # Set to true to enable fingerprint auth
+        enable = true;         # Set to true to enable fingerprint auth
         autoDetect = true;     # Auto-detect fingerprint hardware
       };
       fido2 = {

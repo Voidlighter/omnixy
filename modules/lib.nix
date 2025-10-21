@@ -144,9 +144,9 @@ in
     # Standard shell aliases that work consistently across modules
     programs.bash.shellAliases = {
       # OmniXY management
-      omnixy-rebuild = "sudo nixos-rebuild switch --flake ${helpers.paths.config}#omnixy";
-      omnixy-build = "sudo nixos-rebuild build --flake ${helpers.paths.config}#omnixy";
-      omnixy-test = "sudo nixos-rebuild test --flake ${helpers.paths.config}#omnixy";
+      omnixy-rebuild = "sudo nixos-rebuild switch --flake ${helpers.paths.config}#laserbeak";
+      omnixy-build = "sudo nixos-rebuild build --flake ${helpers.paths.config}#laserbeak";
+      omnixy-test = "sudo nixos-rebuild test --flake ${helpers.paths.config}#laserbeak";
       omnixy-update = "cd ${helpers.paths.config} && sudo nix flake update";
       omnixy-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
       omnixy-generations = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";

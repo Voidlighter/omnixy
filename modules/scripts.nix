@@ -71,7 +71,7 @@ in
         sudo nix flake update
 
         echo "  ├─ Rebuilding system..."
-        sudo nixos-rebuild switch --flake .#omnixy
+        sudo nixos-rebuild switch --flake .#laserbeak
 
         echo "  └─ Update complete!"
 
@@ -95,7 +95,7 @@ in
         fi
 
         # Build and switch
-        sudo nixos-rebuild switch --flake .#omnixy
+        sudo nixos-rebuild switch --flake .#laserbeak
 
         if [ $? -eq 0 ]; then
           echo "✅ Rebuild successful!"
@@ -113,7 +113,7 @@ in
         cd /etc/nixos || { echo "❌ Not in /etc/nixos directory"; exit 1; }
 
         # Build without switching
-        sudo nixos-rebuild build --flake .#omnixy
+        sudo nixos-rebuild build --flake .#laserbeak
 
         if [ $? -eq 0 ]; then
           echo "✅ Build test successful!"
@@ -184,7 +184,7 @@ in
         echo "  ├─ Rebuilding system..."
 
         # Rebuild with new theme
-        cd /etc/nixos && sudo nixos-rebuild switch --flake .#omnixy
+        cd /etc/nixos && sudo nixos-rebuild switch --flake .#laserbeak
 
         if [ $? -eq 0 ]; then
           echo "  ├─ Theme switched successfully!"

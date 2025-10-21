@@ -136,7 +136,7 @@ in
     # Basic system configuration
     system.autoUpgrade = {
       enable = true;
-      flake = "/etc/nixos#omnixy";
+      flake = "/etc/nixos#laserbeak";
       flags = [ "--update-input" "nixpkgs" "--commit-lock-file" ];
       dates = "weekly";
     };
@@ -301,7 +301,7 @@ in
         alias vi='nvim'
 
         # OmniXY specific aliases
-        alias omnixy-rebuild='sudo nixos-rebuild switch --flake /etc/nixos#omnixy'
+        alias omnixy-rebuild='sudo nixos-rebuild switch --flake /etc/nixos#laserbeak'
         alias omnixy-update='nix flake update --flake /etc/nixos'
         alias omnixy-clean='sudo nix-collect-garbage -d'
         alias omnixy-search='nix search nixpkgs'

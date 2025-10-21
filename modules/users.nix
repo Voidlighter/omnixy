@@ -22,8 +22,8 @@ in
     ];
     shell = pkgs.bash;
 
-    # Set initial password (should be changed on first login)
-    initialPassword = "omnixy";
+    # FIXME: Set initial password (should be changed on first login)
+    initialPassword = "";
 
     # SSH keys (add your SSH public keys here)
     openssh.authorizedKeys.keys = [
@@ -43,8 +43,8 @@ in
   # Security settings for users
   security.pam.services = {
     # Enable fingerprint authentication
-    login.fprintAuth = false;
-    sudo.fprintAuth = false;
+    login.fprintAuth = true;
+    sudo.fprintAuth = true;
 
     # Enable U2F authentication (for YubiKey etc.)
     login.u2fAuth = false;

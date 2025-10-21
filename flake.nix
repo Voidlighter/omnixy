@@ -63,7 +63,8 @@
     {
       # NixOS configuration
       nixosConfigurations = {
-        omnixy = nixpkgs.lib.nixosSystem {
+        # FIXME: replace with your hostname
+        laserbeak = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit inputs; };
           modules = [
@@ -75,8 +76,8 @@
                 useUserPackages = true;
                 extraSpecialArgs = { inherit inputs; };
                 users = {
-                  # Replace with your username
-                  user = import ./home.nix;
+                  # FIXME: Replace with your username
+                  cade = import ./home.nix;
                 };
                 sharedModules = [
                   inputs.nix-colors.homeManagerModules.default
@@ -103,8 +104,9 @@
                     imports = [ ./home.nix ];
                     
                     # Override the username and home directory for ISO
-                    home.username = lib.mkForce "nixos";
-                    home.homeDirectory = lib.mkForce "/home/nixos";
+                    # FIXME: Replace with your username
+                    home.username = lib.mkForce "cade";
+                    home.homeDirectory = lib.mkForce "/home/cade";
                   };
                 };
                 sharedModules = [
@@ -159,7 +161,7 @@
             echo ""
 
             # Setup aliases
-            alias omnixy-rebuild="sudo nixos-rebuild switch --flake .#omnixy"
+            alias omnixy-rebuild="sudo nixos-rebuild switch --flake .#laserbeak"
             alias omnixy-update="nix flake update"
             alias omnixy-clean="nix-collect-garbage -d"
 
@@ -265,7 +267,7 @@
 
             # Rebuild
             echo "🏗️  Rebuilding system..."
-            sudo nixos-rebuild switch --flake /etc/nixos#omnixy
+            sudo nixos-rebuild switch --flake /etc/nixos#laserbeak
 
             echo ""
             echo "✅ Installation complete!"

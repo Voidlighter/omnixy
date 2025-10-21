@@ -60,9 +60,9 @@ pkgs.stdenv.mkDerivation rec {
 
     # Rebuild system
     if [[ "''${OMNIXY_QUIET:-}" == "1" ]]; then
-      sudo nixos-rebuild switch --flake /etc/nixos#omnixy >/dev/null 2>&1
+      sudo nixos-rebuild switch --flake /etc/nixos#laserbeak >/dev/null 2>&1
     else
-      sudo nixos-rebuild switch --flake /etc/nixos#omnixy
+      sudo nixos-rebuild switch --flake /etc/nixos#laserbeak
       echo "Theme switched to $THEME successfully!"
     fi
     EOF
@@ -154,9 +154,9 @@ pkgs.stdenv.mkDerivation rec {
       echo "🏗️  Rebuilding system..."
     fi
     if [[ "''${OMNIXY_QUIET:-}" == "1" ]]; then
-      sudo nixos-rebuild switch --flake .#omnixy >/dev/null 2>&1
+      sudo nixos-rebuild switch --flake .#laserbeak >/dev/null 2>&1
     else
-      sudo nixos-rebuild switch --flake .#omnixy
+      sudo nixos-rebuild switch --flake .#laserbeak
       echo ""
       echo "✅ System updated successfully!"
     fi
@@ -532,7 +532,7 @@ pkgs.stdenv.mkDerivation rec {
     # Create rebuild alias
     cat > $out/bin/omnixy-rebuild << 'EOF'
     #!/usr/bin/env bash
-    sudo nixos-rebuild switch --flake /etc/nixos#omnixy "$@"
+    sudo nixos-rebuild switch --flake /etc/nixos#laserbeak "$@"
     EOF
     chmod +x $out/bin/omnixy-rebuild
   '';

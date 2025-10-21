@@ -132,7 +132,7 @@ in
 
         # Regenerate initrd
         echo "🔄 Regenerating initrd..."
-        sudo nixos-rebuild boot --flake /etc/nixos#omnixy
+        sudo nixos-rebuild boot --flake /etc/nixos#laserbeak
 
         echo "✅ Plymouth theme updated!"
         echo "⚠️  Reboot to see the new boot theme"

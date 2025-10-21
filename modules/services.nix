@@ -224,7 +224,7 @@ in
     #   enable = true;
     #   allowReboot = false;
     #   dates = "04:00";
-    #   flake = "/etc/nixos#omnixy";
+    #   flake = "/etc/nixos#laserbeak";
     # };
 
     # Earlyoom - out of memory killer

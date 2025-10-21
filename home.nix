@@ -2,8 +2,10 @@
 
 {
   # Home Manager needs a bit of information about you and the paths it should manage
-  home.username = "user"; # Change this to your username
-  home.homeDirectory = "/home/user"; # Change this to your home directory
+
+  # FIXME: Change "myuser" to your username
+  home.username = "cade"; # Change this to your username
+  home.homeDirectory = "/home/cade";
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -96,8 +98,9 @@
   # Git configuration
   programs.git = {
     enable = true;
-    userName = "Your Name"; # Change this
-    userEmail = "your.email@example.com"; # Change this
+    # FIXME: Change these to your name and email
+    userName = "Cade";
+    userEmail = "voidlighter@proton.me";
 
     delta = {
       enable = true;
@@ -148,7 +151,7 @@
       find = "fd";
 
       # NixOS specific
-      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#omnixy";
+      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#laserbeak";
       update = "nix flake update";
       clean = "nix-collect-garbage -d";
 
